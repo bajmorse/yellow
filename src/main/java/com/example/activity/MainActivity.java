@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.R;
+import com.example.fragments.MainFragment;
 
 public class MainActivity extends Activity {
 
@@ -22,13 +23,13 @@ public class MainActivity extends Activity {
     }
 
 
-    public static class MainFragment extends Fragment {
-        public MainFragment() {}
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.main_fragment, container, false);
-            return rootView;
-        }
-    }
+//    public static class MainFragment extends Fragment {
+//        public MainFragment() {}
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//            View rootView = inflater.inflate(R.layout.main_fragment, container, false);
+//            return rootView;
+//        }
+//    }
 }
