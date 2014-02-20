@@ -1,19 +1,23 @@
 package com.example.adapters;
 
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.TextView;
+
 import com.example.R;
-import com.example.activity.MainActivity;
+import com.example.activities.MainActivity;
 import com.example.models.Address;
 import com.example.models.Listing;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+
 import java.util.ArrayList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+
+import static org.fest.assertions.api.ANDROID.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
 * Created by WX009-PC on 2/19/14.
@@ -23,7 +27,6 @@ public class ListingAdapterTest {
     private ListingAdapter adapter;
     private MainActivity activity;
     private  ArrayList<Listing> listings;
-   // private Listing one;
 
     @Before
     public void setUp() throws Exception {
@@ -43,22 +46,17 @@ public class ListingAdapterTest {
 
     @Test
     public void getCount_shouldReturnListSize() throws Exception {
-        assertThat(adapter.getCount(), equalTo(listings.size()));
+        assertThat(adapter).hasCount(1);
     }
 
     @Test
     public void getItem_shouldReturnInfo() throws Exception {
-        assertThat(((Listing) adapter.getItem(0)).getName(), equalTo(listings.get(0).getName()));
+        View view = adapter.getView(0, null, null);
+        assertThat((TextView)view.findViewById(R.id.listing_title)).hasText("One");
     }
 
     @Test
     public void testGetItemId() throws Exception {
-        assertThat(adapter.getItemId(0), equalTo(0L));
-    }
-
-    @Test
-    public void testGetView() throws Exception {
-        TextView nameView =  (TextView)adapter.getView(0, null, new LinearLayout(activity)).findViewById(R.id.listing_title);
-        assertThat(nameView.getText().toString(), equalTo(listings.get(0).getName()));
+        assertThat(adapter.getItemId(0)).isEqualTo((long)0);
     }
 }

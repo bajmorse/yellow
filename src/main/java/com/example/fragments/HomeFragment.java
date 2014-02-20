@@ -15,7 +15,7 @@ import com.example.R;
  */
 public class HomeFragment extends Fragment {
 
-    private onItemClickedListener mListener;
+    public onItemClickedListener mListener;
     private LayoutInflater mLayoutInflater;
 
     @Override
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    public interface onItemClickedListener{
+    public interface onItemClickedListener {
         public void onListButtonClicked();
         public void onMapButtonClicked();
     }
@@ -55,8 +55,6 @@ public class HomeFragment extends Fragment {
         super.onAttach(activity);
         if (activity instanceof onItemClickedListener) {
             mListener = (onItemClickedListener) activity;
-        } else {
-            throw new ClassCastException(activity.toString());
         }
     }
 

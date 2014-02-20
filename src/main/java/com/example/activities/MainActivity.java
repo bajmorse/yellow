@@ -1,4 +1,4 @@
-package com.example.activity;
+package com.example.activities;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements HomeFragment.onItemClicked
     public void onListButtonClicked(){
         ListFragment listFragment = new ListFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_activity, listFragment);
+        transaction.replace(R.id.main_activity, listFragment, "MY_LIST_FRAGMENT");
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -34,8 +34,8 @@ public class MainActivity extends Activity implements HomeFragment.onItemClicked
     public void onMapButtonClicked(){
         MapFragment mapFragment = new MapFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//        transaction.replace(R.id.main_activity, mapFragment);
-//        transaction.addToBackStack(null);
+        transaction.replace(R.id.main_activity, mapFragment, "MY_MAP_FRAGMENT");
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }

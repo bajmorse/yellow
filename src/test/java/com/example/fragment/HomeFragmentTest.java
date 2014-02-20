@@ -3,40 +3,66 @@ package com.example.fragment;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import com.example.activity.MainActivity;
+import android.widget.Button;
+
+import com.example.R;
 import com.example.fragments.HomeFragment;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.util.ActivityController;
+
 import static org.junit.Assert.assertTrue;
-import static org.robolectric.Robolectric.buildActivity;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class HomeFragmentTest {
-    private ActivityController<MainActivity> activityController;
-    private HomeFragment fragment;
+    private Activity activity;
+    private HomeFragment homeFragment;
+    private Button listButton;
+    private Button mapButton;
 
     private void addFragment() {
-        Activity activity = activityController.create().get();
         FragmentManager fragmentManager = activity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new HomeFragment();
-        fragmentTransaction.add(fragment, null);
+        homeFragment = new HomeFragment();
+        fragmentTransaction.add(homeFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        activityController = buildActivity(MainActivity.class);
+        activity = Robolectric.buildActivity(Activity.class).create().visible().get();
         addFragment();
-        activityController.start().resume().visible();
+        homeFragment.mListener = mock(HomeFragment.onItemClickedListener.class);
+        listButton = (Button) homeFragment.getView().findViewById(R.id.list_button);
+        mapButton = (Button) homeFragment.getView().findViewById(R.id.map_button);
     }
 
     @Test
     public void fragmentShouldNotBeNull() throws Exception {
-        assertTrue(fragment != null);
+        assertTrue(homeFragment != null);
+    }
+
+    @Test
+    public void ListButtonClick_shouldCallListClickListener() {
+        //Robolectric.clickOn(listButton);
+        listButton.performClick();
+        verify(homeFragment.mListener).onListButtonClicked();
+    }
+
+    @Test
+    public void MapButtonClick_shouldCallMapClickListener() {
+        //Robolectric.clickOn(listButton);
+        mapButton.performClick();
+        verify(homeFragment.mListener).onMapButtonClicked();
+    }
+
+    @Test
+    public void listButtonShouldSendListenerEvent() throws Exception {
+
     }
 }
