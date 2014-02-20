@@ -3,8 +3,6 @@ package com.example.models;
 /**
  * Created by WX009-PC on 2/19/14.
  */
-
-
 import com.google.gson.annotations.Expose;
 
 public class Summary {

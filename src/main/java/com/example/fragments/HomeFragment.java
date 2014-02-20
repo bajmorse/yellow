@@ -23,7 +23,7 @@ import org.json.JSONObject;
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class MainFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
     private static final String mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=Restaurants&where=Toronto&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=4nd67ycv3yeqtg97dku7m845";
 
@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
                 Gson gson = new Gson();
                 YellowResponse yellowResponse = gson.fromJson(response.toString(), YellowResponse.class);
                 Listings.getInstance().setListings(yellowResponse.getListings());
-                mListingAdapter = new ListingAdapter(mLayoutInflater);
+                mListingAdapter = new ListingAdapter(mLayoutInflater, Listings.getInstance().getListings());
                 mListView.setAdapter(mListingAdapter);
                 mListingAdapter.notifyDataSetChanged();
             }

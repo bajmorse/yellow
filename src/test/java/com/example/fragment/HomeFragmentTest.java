@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import com.example.activity.MainActivity;
-import com.example.fragments.MainFragment;
+import com.example.fragments.HomeFragment;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,15 +15,15 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Robolectric.buildActivity;
 
 @RunWith(RobolectricTestRunner.class)
-public class MainFragmentTest {
+public class HomeFragmentTest {
     private ActivityController<MainActivity> activityController;
-    private MainFragment fragment;
+    private HomeFragment fragment;
 
     private void addFragment() {
         Activity activity = activityController.create().get();
         FragmentManager fragmentManager = activity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragment = new MainFragment();
+        fragment = new HomeFragment();
         fragmentTransaction.add(fragment, null);
         fragmentTransaction.commit();
     }

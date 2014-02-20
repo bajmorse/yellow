@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.example.R;
-import com.example.fragments.MainFragment;
+import com.example.fragments.HomeFragment;
 
 public class MainActivity extends Activity {
 
@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main_activity);
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction().add(R.id.main_activity, new MainFragment()).commit();
+            getFragmentManager().beginTransaction().add(R.id.main_activity, new HomeFragment()).commit();
         }
     }
 }

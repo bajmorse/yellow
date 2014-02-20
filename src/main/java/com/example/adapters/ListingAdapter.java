@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.example.R;
 import com.example.models.Listing;
-import com.example.singletons.Listings;
+
+import java.util.List;
 
 /**
  * Created by WX009-PC on 2/19/14.
@@ -16,19 +17,21 @@ import com.example.singletons.Listings;
 public class ListingAdapter extends BaseAdapter {
 
     private LayoutInflater mLayoutInflater;
+    private List<Listing> mListings;
 
-    public ListingAdapter(LayoutInflater layoutInflater) {
+    public ListingAdapter(LayoutInflater layoutInflater, List<Listing> listings) {
         mLayoutInflater = layoutInflater;
+        mListings = listings;
     }
 
     @Override
     public int getCount() {
-        return Listings.getInstance().getListings().size();
+        return mListings.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return Listings.getInstance().getListings().get(i);
+        return mListings.get(i);
     }
 
     @Override
@@ -47,11 +50,11 @@ public class ListingAdapter extends BaseAdapter {
             viewHolder.listingProvince = (TextView) view.findViewById(R.id.listing_province);
             view.setTag(viewHolder);
         }
-        else{
+        else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Listing listing = Listings.getInstance().getListings().get(i);
+        Listing listing = mListings.get(i);
         viewHolder.listingTitle.setText(listing.getName());
         viewHolder.listingAddress.setText(listing.getAddress().getStreet());
         viewHolder.listingProvince.setText(listing.getAddress().getCity());
