@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/listing_province"
+        android:id="@+id/listing_city"
         android:layout_gravity="left|center_vertical"
         android:textColor="#d6d6d6"/>
 </LinearLayout>

@@ -47,7 +47,7 @@ public class ListingAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(R.layout.row_listview, null);
             viewHolder.listingTitle = (TextView) view.findViewById(R.id.listing_title);
             viewHolder.listingAddress = (TextView) view.findViewById(R.id.listing_address);
-            viewHolder.listingProvince = (TextView) view.findViewById(R.id.listing_province);
+            viewHolder.listingCity = (TextView) view.findViewById(R.id.listing_city);
             view.setTag(viewHolder);
         }
         else {
@@ -57,13 +57,13 @@ public class ListingAdapter extends BaseAdapter {
         Listing listing = mListings.get(i);
         viewHolder.listingTitle.setText(listing.getName());
         viewHolder.listingAddress.setText(listing.getAddress().getStreet());
-        viewHolder.listingProvince.setText(listing.getAddress().getCity());
+        viewHolder.listingCity.setText(listing.getAddress().getCity());
         return view;
     }
 
     private class ViewHolder {
         TextView listingTitle;
         TextView listingAddress;
-        TextView listingProvince;
+        TextView listingCity;
     }
 }
