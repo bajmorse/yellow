@@ -18,9 +18,7 @@ import java.util.List;
 
 public class MainActivity extends Activity implements HomeFragment.onItemClickedListener, ListFragment.onListViewItemClickedListener {
 
-
     private VolleyServiceLayer volleyServiceLayer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +43,9 @@ public class MainActivity extends Activity implements HomeFragment.onItemClicked
 
     @Override
     public void onMapButtonClicked(){
-        GoogleMapFragment googleMapFragment = new GoogleMapFragment();
+        GoogleMapFragment googleMapFragment = new GoogleMapFragment(Listings.getInstance().getListings());
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_activity, googleMapFragment, "MY_MAP_FRAGMENT");
+        transaction.replace(R.id.main_activity, googleMapFragment, "MY_GOOGLE_MAP_FRAGMENT");
         transaction.addToBackStack(null);
         transaction.commit();
     }
