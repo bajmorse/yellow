@@ -141,8 +141,8 @@
                             <removeExistingSignatures>true</removeExistingSignatures>
                             <archiveDirectory/>
                             <includes>
-                                <include>target/tddrampup.apk</include>
-                            </includes>
+                            <include>target/tddrampup.apk</include>
+                        </includes>
                             <keystore>tdd-rampup.keystore</keystore>
                             <alias>tdd</alias>
                             <storepass>rampup1</storepass>

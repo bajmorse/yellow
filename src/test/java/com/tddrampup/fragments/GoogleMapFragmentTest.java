@@ -16,15 +16,15 @@ import static org.junit.Assert.assertTrue;
  * Created by WX009-PC on 2/21/14.
  */
 @RunWith(RobolectricTestRunner.class)
-public class MapFragmentTest {
+public class GoogleMapFragmentTest {
     private Activity activity;
-    private MapFragment mapFragment;
+    private GoogleMapFragment googleMapFragment;
 
     private void addFragment() {
         FragmentManager fragmentManager = activity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        mapFragment = new MapFragment();
-        fragmentTransaction.add(mapFragment, null);
+        googleMapFragment = new GoogleMapFragment();
+        fragmentTransaction.add(googleMapFragment, null);
         fragmentTransaction.commit();
     }
 
@@ -36,6 +36,6 @@ public class MapFragmentTest {
 
     @Test
     public void fragmentShouldNotBeNull() throws Exception {
-        assertTrue(mapFragment != null);
+        assertTrue(googleMapFragment != null);
     }
 }

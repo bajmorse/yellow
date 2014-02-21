@@ -6,9 +6,9 @@ import android.os.Bundle;
 
 import com.tddrampup.R;
 import com.tddrampup.fragments.DetailFragment;
+import com.tddrampup.fragments.GoogleMapFragment;
 import com.tddrampup.fragments.HomeFragment;
 import com.tddrampup.fragments.ListFragment;
-import com.tddrampup.fragments.MapFragment;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
@@ -45,9 +45,9 @@ public class MainActivity extends Activity implements HomeFragment.onItemClicked
 
     @Override
     public void onMapButtonClicked(){
-        MapFragment mapFragment = new MapFragment();
+        GoogleMapFragment googleMapFragment = new GoogleMapFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_activity, mapFragment, "MY_MAP_FRAGMENT");
+        transaction.replace(R.id.main_activity, googleMapFragment, "MY_MAP_FRAGMENT");
         transaction.addToBackStack(null);
         transaction.commit();
     }
