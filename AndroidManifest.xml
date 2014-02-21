@@ -2,15 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           android:versionCode="2"
           android:versionName="1.0.0-SNAPSHOT"
-          package="com.example">
+          package="com.tddrampup">
 
     <uses-sdk android:minSdkVersion="14"
               android:targetSdkVersion="19"/>
 
-    <application android:name=".YellowApplication"
+    <application android:name="com.tddrampup.YellowApplication"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.MainActivity"
+        <activity android:name="com.tddrampup.activities.MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
