@@ -49,6 +49,4 @@ public class ListingAdapterTest {
     public void getItemId_shouldReturnZero() throws Exception {
         assertThat(mAdapter.getItemId(0)).isEqualTo((long) 0);
     }
-
-    // TODO: get View test
 }

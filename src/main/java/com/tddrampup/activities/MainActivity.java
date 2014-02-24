@@ -61,7 +61,7 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
         volleyServiceLayer.GetListing(listing.getId());
     }
 
-    class Callback implements VolleyServiceLayerCallback {
+    public class Callback implements VolleyServiceLayerCallback {
         public void listCallbackCall(List<Listing> listings) {
             // do nothing
         }

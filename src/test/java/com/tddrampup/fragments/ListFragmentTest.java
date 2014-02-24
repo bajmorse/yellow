@@ -3,6 +3,7 @@ package com.tddrampup.fragments;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.tddrampup.R;
@@ -16,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
 /**
@@ -24,6 +26,7 @@ import static org.robolectric.Robolectric.shadowOf;
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class ListFragmentTest {
     private ListFragment mListFragment;
+    private ListView mListView;
 
     @Inject
     ListingsInterface mListings;
@@ -38,25 +41,31 @@ public class ListFragmentTest {
 
     @Before
     public void setUp() throws Exception {
+        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        addFragment(mainActivity);
 
+        mListView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
+        ListingAdapter listingAdapter = new ListingAdapter(mainActivity.getLayoutInflater(), mListings.getListings());
+        mListView.setAdapter(listingAdapter);
     }
 
     @Test
     public void onListViewItemClickedListener_shouldCallOnListViewItemClicked() throws Exception {
-        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
-        addFragment(mainActivity);
-
-        ListView listView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
-        ListingAdapter listingAdapter = new ListingAdapter(mainActivity.getLayoutInflater(), mListings.getListings());
-        listView.setAdapter(listingAdapter);
-
-        shadowOf(listView).performItemClick(0);
-        //verify(mainActivity).onListViewItemClicked(0);
+        shadowOf(mListView).performItemClick(0);
         //TODO: add function call assert
     }
 
+    @Test
+    public void setupAdapter_shouldPopulateListViewWithCorrectData() throws Exception {
+        TextView titleTextView = (TextView) mListView.getAdapter().getView(0, null, mListView).findViewById(R.id.listing_title);
+        TextView addressTextView = (TextView) mListView.getAdapter().getView(0, null, mListView).findViewById(R.id.listing_address);
+        TextView cityTextView = (TextView) mListView.getAdapter().getView(0, null, mListView).findViewById(R.id.listing_city);
 
-    // TODO: populate list test
+        assertThat(titleTextView).hasText("One");
+        assertThat(addressTextView).hasText("Street");
+        assertThat(cityTextView).hasText("Toronto");
+    }
+
     // TODO: attach test
     // TODO: detach test
     // TODO: recycling views test

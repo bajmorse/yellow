@@ -3,21 +3,26 @@ package com.tddrampup.activities;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 
+import com.google.inject.Inject;
 import com.tddrampup.R;
+import com.tddrampup.RobolectricTestRunnerWithInjection;
 import com.tddrampup.fragments.HomeFragment;
+import com.tddrampup.singletons.ListingsInterface;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 
 import static org.fest.assertions.api.ANDROID.assertThat;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricTestRunnerWithInjection.class)
 public class MainActivityTest {
     private MainActivity activity;
+
+    @Inject
+    ListingsInterface mListings;
 
     @Before
     public void setUp() throws Exception {
@@ -47,15 +52,10 @@ public class MainActivityTest {
         assertThat(mapFragment).isVisible();
     }
 
-//    @Test
-//    public void onListViewItemClicked_shouldOpenDetailFragment() throws Exception {
-//        ListFragment listFragment = new ListFragment();
-//        ListView listView = (ListView) listFragment.getView().findViewById(R.id.list_view);
-//        ListingAdapter listingAdapter = new ListingAdapter(activity.getLayoutInflater(), mListings);
-//        listView.setAdapter(listingAdapter);
-//        shadowOf(listView).populateItems();
-//        shadowOf(listView).performItemClick(0);
-//        Fragment detailFragment = activity.getFragmentManager().findFragmentByTag("MY_DETAIL_FRAGMENT");
-//        assertThat(detailFragment).isVisible();
-//    }
+    @Test
+    public void itemCallbackCall_shouldOpenDetailFragment() throws Exception {
+        activity.new Callback().itemCallbackCall(mListings.getListings().get(0));
+        Fragment detailFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_DETAIL_FRAGMENT");
+        assertThat(detailFragment).isVisible();
+    }
 }
