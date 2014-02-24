@@ -1,15 +1,15 @@
 package com.tddrampup.fragments;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+
+import roboguice.activity.RoboFragmentActivity;
 
 /**
  * Created by WX009-PC on 2/21/14.
@@ -17,25 +17,20 @@ import org.robolectric.RobolectricTestRunner;
 @Ignore
 @RunWith(RobolectricTestRunner.class)
 public class GoogleMapFragmentTest {
-    private Activity activity;
+    private RoboFragmentActivity activity;
     private GoogleMapFragment googleMapFragment;
 
     private void addFragment() {
-        FragmentManager fragmentManager = activity.getFragmentManager();
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        googleMapFragment = new GoogleMapFragment();
+        googleMapFragment = new GoogleMapFragment(null);
         fragmentTransaction.add(googleMapFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(Activity.class).create().visible().get();
+        activity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
         addFragment();
-    }
-
-    @Test
-    public void fragmentShouldNotBeNull() throws Exception {
-//        assertTrue(googleMapFragment != null);
     }
 }

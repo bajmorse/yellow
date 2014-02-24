@@ -1,15 +1,16 @@
 package com.tddrampup.fragments;
 
-import android.app.Fragment;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tddrampup.R;
@@ -17,10 +18,13 @@ import com.tddrampup.models.Listing;
 
 import java.util.List;
 
+import roboguice.activity.RoboFragmentActivity;
+import roboguice.fragment.RoboFragment;
+
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class GoogleMapFragment extends Fragment {
+public class GoogleMapFragment extends RoboFragment {
 
     private List<Listing> mListings;
     private GoogleMap map;
@@ -40,22 +44,22 @@ public class GoogleMapFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.google_map_fragment, container, false);
 
-        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.google_map)).getMap();
+        RoboFragmentActivity activity = (RoboFragmentActivity) getActivity();
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        map = ((SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map)).getMap();
         map.setMyLocationEnabled(true);
+        addMarkers();
+
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
-                if(isFirstLoad) {
-                    Location myLocation = map.getMyLocation();
-                    if (myLocation != null) {
-                        LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
-                        isFirstLoad = false;
-                    }
+                if(location != null) {
+                    LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
+                    map.setOnMyLocationChangeListener(null);
                 }
             }
         });
-        addMarkers();
 
         return rootView;
     }

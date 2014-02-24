@@ -1,30 +1,23 @@
 package com.tddrampup.singletons;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.tddrampup.models.Listing;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class Listings {
+@Singleton
+public class Listings implements ListingsInterface {
 
-    private static Listings mInstance = null;
     private List<Listing> mListings;
-    private Listing mListing;
 
-
-    private Listings() {
+    @Inject
+    public Listings() {
         mListings = new ArrayList<Listing>();
-        mListing = new Listing();
-    }
-
-    public static Listings getInstance(){
-        if(mInstance == null)
-        {
-            mInstance = new Listings();
-        }
-        return mInstance;
     }
 
     public List<Listing> getListings(){

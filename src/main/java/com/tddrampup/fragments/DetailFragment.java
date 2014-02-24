@@ -1,6 +1,5 @@
 package com.tddrampup.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,12 @@ import android.widget.TextView;
 import com.tddrampup.R;
 import com.tddrampup.models.Listing;
 
+import roboguice.fragment.RoboFragment;
+
 /**
  * Created by WX009-PC on 2/21/14.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends RoboFragment {
 
     private Listing mListing;
     private TextView nameTextView;

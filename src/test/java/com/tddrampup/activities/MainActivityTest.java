@@ -1,11 +1,10 @@
 package com.tddrampup.activities;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.widget.Button;
 
 import com.tddrampup.R;
-import com.tddrampup.models.Address;
-import com.tddrampup.models.Listing;
+import com.tddrampup.fragments.HomeFragment;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,36 +13,20 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.ArrayList;
-
 import static org.fest.assertions.api.ANDROID.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
     private MainActivity activity;
-    private  ArrayList<Listing> listings;
-
-    public void createFakeData() {
-        Listing one = new Listing();
-        Address addOne = new Address();
-        addOne.setCity("Toronto");
-        addOne.setStreet("Street");
-        one.setName("One");
-        one.setAddress(addOne);
-        listings = new ArrayList<Listing>();
-        listings.add(one);
-    }
-
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(MainActivity.class).create().visible().get();
-        createFakeData();
+        activity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
     }
 
     @Test
     public void onCreate_shouldDisplayHomeFragment() throws Exception {
-        Fragment homeFragment = activity.getFragmentManager().findFragmentByTag("MY_HOME_FRAGMENT");
+        HomeFragment homeFragment = (HomeFragment) activity.getSupportFragmentManager().findFragmentByTag("MY_HOME_FRAGMENT");
         assertThat(homeFragment).isVisible();
     }
 
@@ -51,7 +34,7 @@ public class MainActivityTest {
     public void onListButtonClicked_shouldOpenListFragment() throws Exception {
         Button listButton = (Button) activity.findViewById(R.id.list_button);
         listButton.performClick();
-        Fragment listFragment = activity.getFragmentManager().findFragmentByTag("MY_LIST_FRAGMENT");
+        Fragment listFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_LIST_FRAGMENT");
         assertThat(listFragment).isVisible();
     }
 
@@ -60,7 +43,7 @@ public class MainActivityTest {
     public void onMapButtonClicked_shouldOpenMapFragment() throws Exception {
         Button mapButton = (Button) activity.findViewById(R.id.map_button);
         mapButton.performClick();
-        Fragment mapFragment = activity.getFragmentManager().findFragmentByTag("MY_MAP_FRAGMENT");
+        Fragment mapFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_GOOGLE_MAP_FRAGMENT");
         assertThat(mapFragment).isVisible();
     }
 
@@ -68,7 +51,7 @@ public class MainActivityTest {
 //    public void onListViewItemClicked_shouldOpenDetailFragment() throws Exception {
 //        ListFragment listFragment = new ListFragment();
 //        ListView listView = (ListView) listFragment.getView().findViewById(R.id.list_view);
-//        ListingAdapter listingAdapter = new ListingAdapter(activity.getLayoutInflater(), listings);
+//        ListingAdapter listingAdapter = new ListingAdapter(activity.getLayoutInflater(), mListings);
 //        listView.setAdapter(listingAdapter);
 //        shadowOf(listView).populateItems();
 //        shadowOf(listView).performItemClick(0);

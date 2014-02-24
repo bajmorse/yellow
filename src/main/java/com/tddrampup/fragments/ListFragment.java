@@ -1,7 +1,6 @@
 package com.tddrampup.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +8,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.inject.Inject;
 import com.tddrampup.R;
 import com.tddrampup.adapters.ListingAdapter;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
-import com.tddrampup.singletons.Listings;
+import com.tddrampup.singletons.ListingsInterface;
 
 import java.util.List;
+
+import roboguice.fragment.RoboFragment;
 
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class ListFragment extends Fragment  {
+public class ListFragment extends RoboFragment {
 
     private static final String mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=Restaurants&where=Toronto&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=4nd67ycv3yeqtg97dku7m845";
 
@@ -31,6 +33,9 @@ public class ListFragment extends Fragment  {
     private VolleyServiceLayer volleyServiceLayer;
 
     public onListViewItemClickedListener mListener;
+
+    @Inject
+    ListingsInterface mListings;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,7 @@ public class ListFragment extends Fragment  {
             }
         });
 
-        if (Listings.getInstance().getListings().isEmpty()){
+        if (mListings.getListings().isEmpty()){
             volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
             volleyServiceLayer.GetListings(mUrl);
@@ -83,7 +88,7 @@ public class ListFragment extends Fragment  {
 
     class Callback implements VolleyServiceLayerCallback {
         public void listCallbackCall(List<Listing> listings) {
-            Listings.getInstance().setListings(listings);
+            mListings.setListings(listings);
             setupAdapter();
         }
 
@@ -94,7 +99,7 @@ public class ListFragment extends Fragment  {
     }
 
     private void setupAdapter(){
-        mListingAdapter = new ListingAdapter(mLayoutInflater, Listings.getInstance().getListings());
+        mListingAdapter = new ListingAdapter(mLayoutInflater, mListings.getListings());
         mListView.setAdapter(mListingAdapter);
         mListingAdapter.notifyDataSetChanged();
     }

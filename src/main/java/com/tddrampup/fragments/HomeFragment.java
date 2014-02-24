@@ -1,7 +1,6 @@
 package com.tddrampup.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,12 @@ import android.widget.Button;
 
 import com.tddrampup.R;
 
+import roboguice.fragment.RoboFragment;
+
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends RoboFragment {
 
     public onItemClickedListener mListener;
 
