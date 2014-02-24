@@ -71,6 +71,4 @@ public class MainActivity extends Activity implements HomeFragment.onItemClicked
             transaction.commit();
         }
     }
-
-    // TODO: fix callback
 }

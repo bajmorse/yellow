@@ -3,41 +3,80 @@ package com.tddrampup.fragments;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.widget.ListView;
+
+import com.tddrampup.R;
+import com.tddrampup.activities.MainActivity;
+import com.tddrampup.adapters.ListingAdapter;
+import com.tddrampup.models.Address;
+import com.tddrampup.models.Listing;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+
+import static org.robolectric.Robolectric.shadowOf;
 
 /**
  * Created by WX009-PC on 2/21/14.
  */
 @RunWith(RobolectricTestRunner.class)
 public class ListFragmentTest {
-    private Activity activity;
-    private ListFragment listFragment;
+    private Activity mActivity;
+    private ListFragment mListFragment;
+    private  ArrayList<Listing> mListings;
 
-    private void addFragment() {
+    public void createFakeData() {
+        Listing one = new Listing();
+        Address addOne = new Address();
+        addOne.setCity("Toronto");
+        addOne.setStreet("Street");
+        one.setName("One");
+        one.setAddress(addOne);
+        mListings = new ArrayList<Listing>();
+        mListings.add(one);
+    }
+
+    private void addFragment(Activity activity) {
         FragmentManager fragmentManager = activity.getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        listFragment = new ListFragment();
-        fragmentTransaction.add(listFragment, null);
+        mListFragment = new ListFragment();
+        fragmentTransaction.add(mListFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(Activity.class).create().visible().get();
-        addFragment();
+        mActivity = Robolectric.buildActivity(Activity.class).create().visible().get();
+//        addFragment();
+        createFakeData();
     }
 
+//    @Test
+//    public void fragmentShouldNotBeNull() throws Exception {
+//        assertTrue(mListFragment != null);
+//    }
+
+    @Ignore
     @Test
-    public void fragmentShouldNotBeNull() throws Exception {
-        assertTrue(listFragment != null);
+    public void onListViewItemClickedListener_shouldCallOnListViewItemClicked() throws Exception {
+//        MainActivity mainActivity = mock(MainActivity.class);
+        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().visible().get();
+        addFragment(mainActivity);
+
+        ListView listView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
+        ListingAdapter listingAdapter = new ListingAdapter(mainActivity.getLayoutInflater(), mListings);
+        listView.setAdapter(listingAdapter);
+
+        shadowOf(listView).performItemClick(0);
+//        verify(mainActivity).onListViewItemClicked(0);
     }
+
 
     // TODO: populate list test
     // TODO: attach test

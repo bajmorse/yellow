@@ -1,11 +1,13 @@
 package com.tddrampup.fragments;
 
 import android.app.Fragment;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,6 +24,7 @@ public class GoogleMapFragment extends Fragment {
 
     private List<Listing> mListings;
     private GoogleMap map;
+    private boolean isFirstLoad = true;
 
     public GoogleMapFragment(List<Listing> listings) {
         mListings = listings;
@@ -39,13 +42,20 @@ public class GoogleMapFragment extends Fragment {
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.google_map)).getMap();
         map.setMyLocationEnabled(true);
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                if(isFirstLoad) {
+                    Location myLocation = map.getMyLocation();
+                    if (myLocation != null) {
+                        LatLng myLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
+                        isFirstLoad = false;
+                    }
+                }
+            }
+        });
         addMarkers();
-
-//        Location myLoc = map.getMyLocation();
-//        if (myLoc != null){
-//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLoc.getLatitude(),myLoc.getLongitude()), 15));
-//            map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-//        }
 
         return rootView;
     }

@@ -50,7 +50,6 @@ public class DetailFragmentTest{
         fragmentTransaction.commit();
     }
 
-
     @Before
     public void setUp() throws Exception {
         activity = Robolectric.buildActivity(Activity.class).create().visible().get();

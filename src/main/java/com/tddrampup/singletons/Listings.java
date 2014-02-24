@@ -11,9 +11,12 @@ public class Listings {
 
     private static Listings mInstance = null;
     private List<Listing> mListings;
+    private Listing mListing;
+
 
     private Listings() {
         mListings = new ArrayList<Listing>();
+        mListing = new Listing();
     }
 
     public static Listings getInstance(){
@@ -32,6 +35,11 @@ public class Listings {
         mListings = value;
     }
 
-
-    // TODO: add listing
+//    public Listing getListing(){
+//        return this.mListing;
+//    }
+//
+//    public void setListing(Listing value){
+//        mListing = value;
+//    }
 }

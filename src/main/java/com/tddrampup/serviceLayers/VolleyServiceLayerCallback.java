@@ -9,5 +9,4 @@ import java.util.List;
 public interface VolleyServiceLayerCallback {
     void listCallbackCall(List<Listing> listings);
     void itemCallbackCall(Listing listing);
-
 }
