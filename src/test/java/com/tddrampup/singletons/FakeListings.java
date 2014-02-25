@@ -3,6 +3,7 @@ package com.tddrampup.singletons;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.tddrampup.models.Address;
+import com.tddrampup.models.GeoCode;
 import com.tddrampup.models.Listing;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class FakeListings implements ListingsInterface {
         public static final String STREET = "Street";
         public static final String NAME = "One";
         public static final String MERCHANT_URL = "www.herpaderp.com";
+        public static final String LATITUDE = "53.558";
+        public static final String LONGITUDE = "9.927";
     }
 
     private List<Listing> mListings;
@@ -37,6 +40,10 @@ public class FakeListings implements ListingsInterface {
             one.setName(FakeData.NAME);
             one.setMerchantUrl(FakeData.MERCHANT_URL);
             one.setAddress(addOne);
+            GeoCode coordinates = new GeoCode();
+            coordinates.setLatitude(FakeData.LATITUDE);
+            coordinates.setLongitude(FakeData.LONGITUDE);
+            one.setGeoCode(coordinates);
             ArrayList<Listing> listings = new ArrayList<Listing>();
             listings.add(one);
             setListings(listings);
