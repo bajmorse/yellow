@@ -55,9 +55,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>volley</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>com.mcxiaoke.volley</groupId>
+            <artifactId>library</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>
