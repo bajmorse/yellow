@@ -33,6 +33,13 @@ public class HomeFragmentTest {
         fragmentTransaction.commit();
     }
 
+    private void removeFragment() {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(mHomeFragment);
+        fragmentTransaction.commit();
+    }
+
     @Before
     public void setUp() throws Exception {
         mActivity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
@@ -57,5 +64,11 @@ public class HomeFragmentTest {
     @Test
     public void onAttach_shouldAttachOnItemClickedListener() {
         assertThat(mHomeFragment.mListener).isNotNull();
+    }
+
+    @Test
+    public void onDetach_shouldClearOnItemClickListener() {
+        removeFragment();
+        assertThat(mHomeFragment.mListener).isNull();
     }
 }

@@ -30,7 +30,7 @@ import static org.robolectric.Robolectric.shadowOf;
 */
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class ListFragmentTest {
-    private MainActivity mMainActivity;
+    private MainActivity mActivity;
     private ListFragment mListFragment;
     private ListView mListView;
 
@@ -39,20 +39,27 @@ public class ListFragmentTest {
 
     private void addFragment() {
         mListFragment = new ListFragment();
-        FragmentManager fragmentManager = mMainActivity.getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(mListFragment, null);
         fragmentTransaction.commit();
     }
 
+    private void removeFragment() {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(mListFragment);
+        fragmentTransaction.commit();
+    }
+
     @Before
     public void setUp() throws Exception {
-        mMainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        mActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
         mListings.setListings(new ArrayList<Listing>());
         addFragment();
         ((FakeListings) mListings).createFakeData(); // Must be after addFragment() for loading to show
         mListView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
-        ListingAdapter listingAdapter = new ListingAdapter(mMainActivity.getLayoutInflater(), mListings.getListings());
+        ListingAdapter listingAdapter = new ListingAdapter(mActivity.getLayoutInflater(), mListings.getListings());
         mListView.setAdapter(listingAdapter);
     }
 
@@ -83,6 +90,12 @@ public class ListFragmentTest {
     @Test
     public void onAttach_shouldAttachOnItemClickedListener() {
         assertThat(mListFragment.mListener).isNotNull();
+    }
+
+    @Test
+    public void onDetach_shouldClearOnItemClickedListener() {
+        removeFragment();
+        assertThat(mListFragment.mListener).isNull();
     }
 
     // TODO: recycling views test

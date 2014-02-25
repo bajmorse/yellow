@@ -38,12 +38,24 @@ public class GoogleMapFragmentTest {
         fragmentTransaction.commit();
     }
 
+    private void removeFragment() {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(mGoogleMapFragment);
+        fragmentTransaction.commit();
+    }
+
     @Before
     public void setUp() throws Exception {
         mActivity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
         addFragment();
         mGoogleMapFragment.map = mock(GoogleMap.class);
         mGoogleMapFragment.setupMap();
+    }
+
+    @Test
+    public void onResume_shouldInstantiateMap() throws Exception {
+        assertThat(mGoogleMapFragment.map).isNotNull();
     }
 
     @Test
@@ -60,5 +72,11 @@ public class GoogleMapFragmentTest {
     public void addMarkers_shouldPopulateMapWithMarkers() throws Exception {
         assertThat(((FakeMarkerOptionsFactoryWrapper) mGoogleMapFragment.markerOptionsFactory).mLatLng).isEqualTo(new LatLng(Double.parseDouble(HAMBURG_LAT), Double.parseDouble(HAMBURG_LONG)));
         assertThat(((FakeMarkerOptionsFactoryWrapper) mGoogleMapFragment.markerOptionsFactory).mName).isEqualTo("One");
+    }
+
+    @Test
+    public void destroyView_shouldDestroyView() throws Exception {
+        removeFragment();
+        assertThat(mGoogleMapFragment.isAdded()).isFalse();
     }
 }
