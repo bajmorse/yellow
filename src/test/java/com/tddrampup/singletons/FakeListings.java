@@ -15,10 +15,10 @@ import java.util.List;
 public class FakeListings implements ListingsInterface {
 
     public class FakeData {
-        static final String CITY = "Toronto";
-        static final String STREET = "Street";
-        static final String NAME = "One";
-        static final String MERCHANT_URL = "www.herpaderp.com";
+        public static final String CITY = "Toronto";
+        public static final String STREET = "Street";
+        public static final String NAME = "One";
+        public static final String MERCHANT_URL = "www.herpaderp.com";
     }
 
     private List<Listing> mListings;

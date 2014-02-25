@@ -14,6 +14,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import roboguice.activity.RoboFragmentActivity;
 
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -53,6 +54,8 @@ public class HomeFragmentTest {
         verify(mHomeFragment.mListener).onMapButtonClicked();
     }
 
-    // TODO: on attach test
-    // TODO: on detach test
+    @Test
+    public void onAttach_shouldAttachOnItemClickedListener() {
+        assertThat(mHomeFragment.mListener).isNotNull();
+    }
 }

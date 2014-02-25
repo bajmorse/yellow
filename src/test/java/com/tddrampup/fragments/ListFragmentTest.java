@@ -74,7 +74,11 @@ public class ListFragmentTest {
         mListFragment.new Callback().listCallbackCall(mListFragment.mListings.getListings());
         assertThat(mListFragment.isProgressDialogShowing()).isFalse();
     }
+
+    @Test
+    public void onAttach_shouldAttachOnItemClickedListener() {
+        assertThat(mListFragment.mListener).isNotNull();
+    }
+
     // TODO: recycling views test
-    // TODO: detach test
-    // TODO: attach test
 }
