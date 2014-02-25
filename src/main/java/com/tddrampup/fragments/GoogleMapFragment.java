@@ -27,8 +27,7 @@ import roboguice.fragment.RoboFragment;
 public class GoogleMapFragment extends RoboFragment {
 
     private List<Listing> mListings;
-    private GoogleMap map;
-    private boolean isFirstLoad = true;
+    public GoogleMap map;
 
     public GoogleMapFragment(List<Listing> listings) {
         mListings = listings;
@@ -41,33 +40,42 @@ public class GoogleMapFragment extends RoboFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.google_map_fragment, container, false);
+        return rootView;
+    }
 
-        RoboFragmentActivity activity = (RoboFragmentActivity) getActivity();
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        map = ((SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map)).getMap();
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (map == null) {
+            RoboFragmentActivity activity = (RoboFragmentActivity) getActivity();
+            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            map = ((SupportMapFragment) fragmentManager.findFragmentById(R.id.google_map)).getMap();
+            if (map != null) {
+                setupMap();
+            }
+        }
+    }
+
+    private void setupMap() {
         map.setMyLocationEnabled(true);
         addMarkers();
-
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
-                if(location != null) {
+                if (location != null) {
                     LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
                     map.setOnMyLocationChangeListener(null);
                 }
             }
         });
-
-        return rootView;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         Fragment fragment = getFragmentManager().findFragmentById(R.id.google_map);
         if (fragment != null)
             getFragmentManager().beginTransaction().remove(fragment).commit();

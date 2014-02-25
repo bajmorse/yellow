@@ -10,7 +10,6 @@ import com.tddrampup.fragments.HomeFragment;
 import com.tddrampup.singletons.ListingsInterface;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -44,7 +43,6 @@ public class MainActivityTest {
         assertThat(listFragment).isVisible();
     }
 
-    @Ignore
     @Test
     public void onMapButtonClicked_shouldOpenMapFragment() throws Exception {
         Button mapButton = (Button) mMainActivity.findViewById(R.id.map_button);
