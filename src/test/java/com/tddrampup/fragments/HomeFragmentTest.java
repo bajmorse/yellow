@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class HomeFragmentTest {
+
     private RoboFragmentActivity mActivity;
     private HomeFragment mHomeFragment;
     private Button listButton;
@@ -50,25 +51,26 @@ public class HomeFragmentTest {
     }
 
     @Test
-    public void ListButtonClick_shouldCallListClickListener() {
+    public void onAttach_shouldAttachOnItemClickedListener() throws Exception {
+        assertThat(mHomeFragment.mListener).isNotNull();
+    }
+
+    @Test
+    public void onDetach_shouldClearOnItemClickListenerAndUnattachFragment() throws Exception {
+        removeFragment();
+        assertThat(mHomeFragment.mListener).isNull();
+        assertThat(mHomeFragment.isAdded()).isFalse();
+    }
+
+    @Test
+    public void ListButtonClick_shouldCallListClickListener() throws Exception {
         listButton.performClick();
         verify(mHomeFragment.mListener).onListButtonClicked();
     }
 
     @Test
-    public void MapButtonClick_shouldCallMapClickListener() {
+    public void MapButtonClick_shouldCallMapClickListener() throws Exception {
         mapButton.performClick();
         verify(mHomeFragment.mListener).onMapButtonClicked();
-    }
-
-    @Test
-    public void onAttach_shouldAttachOnItemClickedListener() {
-        assertThat(mHomeFragment.mListener).isNotNull();
-    }
-
-    @Test
-    public void onDetach_shouldClearOnItemClickListener() {
-        removeFragment();
-        assertThat(mHomeFragment.mListener).isNull();
     }
 }

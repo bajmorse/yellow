@@ -21,7 +21,7 @@ public class ListingsTest {
 
     Listings mListings;
 
-    public Listing fakeListing(){
+    public Listing fakeListing() {
         Listing fakeListing = new Listing();
         Address addOne = new Address();
         addOne.setCity(FakeListings.FakeData.CITY);

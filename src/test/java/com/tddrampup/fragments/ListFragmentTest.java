@@ -64,6 +64,18 @@ public class ListFragmentTest {
     }
 
     @Test
+    public void onAttach_shouldAttachOnItemClickedListener() throws Exception {
+        assertThat(mListFragment.mListener).isNotNull();
+    }
+
+    @Test
+    public void onDetach_shouldClearOnItemClickedListener() throws Exception {
+        removeFragment();
+        assertThat(mListFragment.mListener).isNull();
+        assertThat(mListFragment.isAdded()).isFalse();
+    }
+
+    @Test
     public void onListViewItemClickedListener_shouldCallOnListViewItemClicked() throws Exception {
         shadowOf(mListView).performItemClick(0);
         //TODO: add function call assert
@@ -81,21 +93,10 @@ public class ListFragmentTest {
     }
 
     @Test
-    public void loadingLifecycle_shouldShowAndHideLoadingProgressDialog() {
+    public void loadingLifecycle_shouldShowAndHideLoadingProgressDialog() throws Exception {
         assertThat(mListFragment.isProgressDialogShowing()).isTrue();
         mListFragment.new Callback().listCallbackCall(mListFragment.mListings.getListings());
         assertThat(mListFragment.isProgressDialogShowing()).isFalse();
-    }
-
-    @Test
-    public void onAttach_shouldAttachOnItemClickedListener() {
-        assertThat(mListFragment.mListener).isNotNull();
-    }
-
-    @Test
-    public void onDetach_shouldClearOnItemClickedListener() {
-        removeFragment();
-        assertThat(mListFragment.mListener).isNull();
     }
 
     // TODO: recycling views test

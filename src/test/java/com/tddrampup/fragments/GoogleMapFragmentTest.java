@@ -25,10 +25,10 @@ import static org.mockito.Mockito.mock;
  */
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class GoogleMapFragmentTest {
+
     private RoboFragmentActivity mActivity;
     private GoogleMapFragment mGoogleMapFragment;
-
-    static final String HAMBURG = "Hamburg", HAMBURG_LAT = "53.558", HAMBURG_LONG = "9.927";
+    private static final String LATITUDE = "53.558", LONGITUDE = "9.927";
 
     private void addFragment() {
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
@@ -59,24 +59,29 @@ public class GoogleMapFragmentTest {
     }
 
     @Test
+    public void onAttach_shouldSetOnItemClickedListener() throws Exception {
+        assertThat(mGoogleMapFragment.mListener).isNotNull();
+    }
+
+    @Test
+    public void onDestroyView_shouldDestroyView() throws Exception {
+        removeFragment();
+        assertThat(mGoogleMapFragment.isAdded()).isFalse();
+    }
+
+    @Test
     public void setupMap_shouldZoomToCurrentLocation() throws Exception {
-        LatLng fakeLatLng = new LatLng(Double.parseDouble(HAMBURG_LAT), Double.parseDouble(HAMBURG_LONG));
+        LatLng fakeLatLng = new LatLng(Double.parseDouble(LATITUDE), Double.parseDouble(LONGITUDE));
         Location fakeLocation = new Location("fakeLocation");
-        fakeLocation.setLatitude(Double.parseDouble(HAMBURG_LAT));
-        fakeLocation.setLongitude(Double.parseDouble(HAMBURG_LONG));
+        fakeLocation.setLatitude(Double.parseDouble(LATITUDE));
+        fakeLocation.setLongitude(Double.parseDouble(LONGITUDE));
         mGoogleMapFragment.mListener.onMyLocationChange(fakeLocation);
         assertThat(((FakeCameraUpdateFactoryWrapper) mGoogleMapFragment.cameraUpdateFactory).mLatLng).isEqualTo(fakeLatLng);
     }
 
     @Test
     public void addMarkers_shouldPopulateMapWithMarkers() throws Exception {
-        assertThat(((FakeMarkerOptionsFactoryWrapper) mGoogleMapFragment.markerOptionsFactory).mLatLng).isEqualTo(new LatLng(Double.parseDouble(HAMBURG_LAT), Double.parseDouble(HAMBURG_LONG)));
+        assertThat(((FakeMarkerOptionsFactoryWrapper) mGoogleMapFragment.markerOptionsFactory).mLatLng).isEqualTo(new LatLng(Double.parseDouble(LATITUDE), Double.parseDouble(LONGITUDE)));
         assertThat(((FakeMarkerOptionsFactoryWrapper) mGoogleMapFragment.markerOptionsFactory).mName).isEqualTo("One");
-    }
-
-    @Test
-    public void destroyView_shouldDestroyView() throws Exception {
-        removeFragment();
-        assertThat(mGoogleMapFragment.isAdded()).isFalse();
     }
 }
