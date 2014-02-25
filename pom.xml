@@ -206,7 +206,6 @@
                         <version>2.6</version>
                         <configuration>
                             <excludes>
-                                <exclude>**/Main/java/com.tddrampup.models*.java</exclude>
                                 <exclude>**/Test*.java</exclude>
                             </excludes>
                             <argLine>-Xmx1024m</argLine>
