@@ -1,6 +1,7 @@
 package com.tddrampup.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ public class ListFragment extends RoboFragment {
     private ListingAdapter mListingAdapter;
     private LayoutInflater mLayoutInflater;
     private VolleyServiceLayer volleyServiceLayer;
+    private ProgressDialog mProgressDialog;
 
     public onListViewItemClickedListener mListener;
 
@@ -48,6 +50,7 @@ public class ListFragment extends RoboFragment {
         mLayoutInflater = inflater;
         View rootView = mLayoutInflater.inflate(R.layout.list_fragment, container, false);
         mListView = (ListView) rootView.findViewById(R.id.list_view);
+        mProgressDialog = new ProgressDialog(getActivity());
 
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
@@ -57,6 +60,7 @@ public class ListFragment extends RoboFragment {
         });
 
         if (mListings.getListings().isEmpty()){
+            showLoading();
             volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
             volleyServiceLayer.GetListings(mUrl);
@@ -70,6 +74,16 @@ public class ListFragment extends RoboFragment {
 
     public interface onListViewItemClickedListener {
         public void onListViewItemClicked(int position);
+    }
+
+    private void showLoading() {
+        mProgressDialog.setTitle("Loading:");
+        mProgressDialog.setMessage("Fetching listings...");
+        mProgressDialog.show();
+    }
+
+    private void hideLoading() {
+        mProgressDialog.dismiss();
     }
 
     @Override
@@ -88,6 +102,7 @@ public class ListFragment extends RoboFragment {
 
     class Callback implements VolleyServiceLayerCallback {
         public void listCallbackCall(List<Listing> listings) {
+            hideLoading();
             mListings.setListings(listings);
             setupAdapter();
         }
@@ -102,5 +117,9 @@ public class ListFragment extends RoboFragment {
         mListingAdapter = new ListingAdapter(mLayoutInflater, mListings.getListings());
         mListView.setAdapter(mListingAdapter);
         mListingAdapter.notifyDataSetChanged();
+    }
+
+    public boolean isProgressDialogShowing() {
+        return mProgressDialog.isShowing();
     }
 }

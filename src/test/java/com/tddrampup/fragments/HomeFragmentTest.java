@@ -19,38 +19,38 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 public class HomeFragmentTest {
-    private RoboFragmentActivity activity;
-    private HomeFragment homeFragment;
+    private RoboFragmentActivity mActivity;
+    private HomeFragment mHomeFragment;
     private Button listButton;
     private Button mapButton;
 
     private void addFragment() {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        homeFragment = new HomeFragment();
-        fragmentTransaction.add(homeFragment, null);
+        mHomeFragment = new HomeFragment();
+        fragmentTransaction.add(mHomeFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
+        mActivity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
         addFragment();
-        homeFragment.mListener = mock(HomeFragment.onItemClickedListener.class);
-        listButton = (Button) homeFragment.getView().findViewById(R.id.list_button);
-        mapButton = (Button) homeFragment.getView().findViewById(R.id.map_button);
+        mHomeFragment.mListener = mock(HomeFragment.onItemClickedListener.class);
+        listButton = (Button) mHomeFragment.getView().findViewById(R.id.list_button);
+        mapButton = (Button) mHomeFragment.getView().findViewById(R.id.map_button);
     }
 
     @Test
     public void ListButtonClick_shouldCallListClickListener() {
         listButton.performClick();
-        verify(homeFragment.mListener).onListButtonClicked();
+        verify(mHomeFragment.mListener).onListButtonClicked();
     }
 
     @Test
     public void MapButtonClick_shouldCallMapClickListener() {
         mapButton.performClick();
-        verify(homeFragment.mListener).onMapButtonClicked();
+        verify(mHomeFragment.mListener).onMapButtonClicked();
     }
 
     // TODO: on attach test

@@ -23,30 +23,31 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class ListingAdapterTest {
     private Activity mActivity;
-    private ListingAdapter mAdapter;
+    private ListingAdapter mListingAdapter;
 
     @Inject
     ListingsInterface mListings;
 
     @Before
     public void setUp() throws Exception {
+        mListings.setListings(null);
         mActivity = Robolectric.buildActivity(Activity.class).create().visible().get();
-        mAdapter = new ListingAdapter(mActivity.getLayoutInflater(), mListings.getListings());
+        mListingAdapter = new ListingAdapter(mActivity.getLayoutInflater(), mListings.getListings());
     }
 
     @Test
     public void getCount_shouldReturnListSize() throws Exception {
-        assertThat(mAdapter).hasCount(1);
+        assertThat(mListingAdapter).hasCount(1);
     }
 
     @Test
     public void getItem_shouldReturnInfo() throws Exception {
-        View view = mAdapter.getView(0, null, null);
+        View view = mListingAdapter.getView(0, null, null);
         assertThat((TextView)view.findViewById(R.id.listing_title)).hasText("One");
     }
 
     @Test
     public void getItemId_shouldReturnZero() throws Exception {
-        assertThat(mAdapter.getItemId(0)).isEqualTo((long) 0);
+        assertThat(mListingAdapter.getItemId(0)).isEqualTo((long) 0);
     }
 }

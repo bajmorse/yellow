@@ -24,28 +24,29 @@ import static org.fest.assertions.api.ANDROID.assertThat;
 */
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class DetailFragmentTest{
-    private RoboFragmentActivity activity;
+    private RoboFragmentActivity mActivity;
     private DetailFragment detailFragment;
-    private Listing listing;
+    private Listing mListing;
     private TextView nameTextView;
     private TextView locationTextView;
     private TextView websiteTextView;
 
     @Inject
-    ListingsInterface listings;
+    ListingsInterface mListings;
 
     private void addFragment() {
-        listing = listings.getListings().get(0);
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        mListing = mListings.getListings().get(0);
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detailFragment = new DetailFragment(listing);
+        detailFragment = new DetailFragment(mListing);
         fragmentTransaction.add(detailFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
+        mListings.setListings(null);
+        mActivity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
         addFragment();
         nameTextView = (TextView) detailFragment.getView().findViewById(R.id.name_detail_fragment);
         locationTextView = (TextView) detailFragment.getView().findViewById(R.id.location_detail_fragment);
@@ -59,7 +60,7 @@ public class DetailFragmentTest{
 
     @Test
     public void getLocation_shouldMatchListing() throws Exception {
-        assertThat(locationTextView).hasText(listing.getAddress().getStreet() + ", " + listing.getAddress().getCity() + ", " + listing.getAddress().getProv() + ", " + listing.getAddress().getPcode());
+        assertThat(locationTextView).hasText(mListing.getAddress().getStreet() + ", " + mListing.getAddress().getCity() + ", " + mListing.getAddress().getProv() + ", " + mListing.getAddress().getPcode());
     }
 
     @Test

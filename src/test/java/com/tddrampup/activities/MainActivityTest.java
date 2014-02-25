@@ -19,43 +19,44 @@ import static org.fest.assertions.api.ANDROID.assertThat;
 
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class MainActivityTest {
-    private MainActivity activity;
+    private MainActivity mMainActivity;
 
     @Inject
     ListingsInterface mListings;
 
     @Before
     public void setUp() throws Exception {
-        activity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        mListings.setListings(null);
+        mMainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
     }
 
     @Test
     public void onCreate_shouldDisplayHomeFragment() throws Exception {
-        HomeFragment homeFragment = (HomeFragment) activity.getSupportFragmentManager().findFragmentByTag("MY_HOME_FRAGMENT");
+        HomeFragment homeFragment = (HomeFragment) mMainActivity.getSupportFragmentManager().findFragmentByTag("MY_HOME_FRAGMENT");
         assertThat(homeFragment).isVisible();
     }
 
     @Test
     public void onListButtonClicked_shouldOpenListFragment() throws Exception {
-        Button listButton = (Button) activity.findViewById(R.id.list_button);
+        Button listButton = (Button) mMainActivity.findViewById(R.id.list_button);
         listButton.performClick();
-        Fragment listFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_LIST_FRAGMENT");
+        Fragment listFragment = mMainActivity.getSupportFragmentManager().findFragmentByTag("MY_LIST_FRAGMENT");
         assertThat(listFragment).isVisible();
     }
 
     @Ignore
     @Test
     public void onMapButtonClicked_shouldOpenMapFragment() throws Exception {
-        Button mapButton = (Button) activity.findViewById(R.id.map_button);
+        Button mapButton = (Button) mMainActivity.findViewById(R.id.map_button);
         mapButton.performClick();
-        Fragment mapFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_GOOGLE_MAP_FRAGMENT");
+        Fragment mapFragment = mMainActivity.getSupportFragmentManager().findFragmentByTag("MY_GOOGLE_MAP_FRAGMENT");
         assertThat(mapFragment).isVisible();
     }
 
     @Test
     public void itemCallbackCall_shouldOpenDetailFragment() throws Exception {
-        activity.new Callback().itemCallbackCall(mListings.getListings().get(0));
-        Fragment detailFragment = activity.getSupportFragmentManager().findFragmentByTag("MY_DETAIL_FRAGMENT");
+        mMainActivity.new Callback().itemCallbackCall(mListings.getListings().get(0));
+        Fragment detailFragment = mMainActivity.getSupportFragmentManager().findFragmentByTag("MY_DETAIL_FRAGMENT");
         assertThat(detailFragment).isVisible();
     }
 }

@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.ANDROID.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
 /**
@@ -25,27 +26,28 @@ import static org.robolectric.Robolectric.shadowOf;
 */
 @RunWith(RobolectricTestRunnerWithInjection.class)
 public class ListFragmentTest {
+    private MainActivity mMainActivity;
     private ListFragment mListFragment;
     private ListView mListView;
 
     @Inject
     ListingsInterface mListings;
 
-    private void addFragment(MainActivity activity) {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    private void addFragment() {
         mListFragment = new ListFragment();
+        FragmentManager fragmentManager = mMainActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(mListFragment, null);
         fragmentTransaction.commit();
     }
 
     @Before
     public void setUp() throws Exception {
-        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
-        addFragment(mainActivity);
-
+        mMainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        addFragment();
+        mListings.setListings(null); // Must be after addFragment() for loading to show
         mListView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
-        ListingAdapter listingAdapter = new ListingAdapter(mainActivity.getLayoutInflater(), mListings.getListings());
+        ListingAdapter listingAdapter = new ListingAdapter(mMainActivity.getLayoutInflater(), mListings.getListings());
         mListView.setAdapter(listingAdapter);
     }
 
@@ -66,7 +68,13 @@ public class ListFragmentTest {
         assertThat(cityTextView).hasText("Toronto");
     }
 
-    // TODO: attach test
-    // TODO: detach test
+    @Test
+    public void loadingLifecycle_shouldShowAndHideLoadingProgressDialog() {
+        assertThat(mListFragment.isProgressDialogShowing()).isTrue();
+        mListFragment.new Callback().listCallbackCall(mListFragment.mListings.getListings());
+        assertThat(mListFragment.isProgressDialogShowing()).isFalse();
+    }
     // TODO: recycling views test
+    // TODO: detach test
+    // TODO: attach test
 }
