@@ -45,7 +45,6 @@ public class DetailFragmentTest{
 
     @Before
     public void setUp() throws Exception {
-        mListings.setListings(null);
         mActivity = Robolectric.buildActivity(RoboFragmentActivity.class).create().start().visible().get();
         addFragment();
         nameTextView = (TextView) detailFragment.getView().findViewById(R.id.name_detail_fragment);

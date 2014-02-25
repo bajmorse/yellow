@@ -26,7 +26,7 @@ public class FakeListings implements ListingsInterface {
     @Inject
     public FakeListings() {
         mListings = new ArrayList<Listing>();
-//        createFakeData();
+        createFakeData();
     }
 
     public void createFakeData(){
@@ -47,10 +47,6 @@ public class FakeListings implements ListingsInterface {
     }
 
     public void setListings(List<Listing> value){
-        if (value != null) {
-            mListings = value;
-        } else {
-            createFakeData();
-        }
+        mListings = value;
     }
 }

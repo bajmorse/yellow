@@ -8,15 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.inject.Inject;
 import com.tddrampup.R;
+import com.tddrampup.factories.CameraUpdateFactoryWrapperInterface;
+import com.tddrampup.factories.MarkerOptionsFactoryWrapperInterface;
 import com.tddrampup.models.Listing;
-
-import java.util.List;
+import com.tddrampup.singletons.ListingsInterface;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.fragment.RoboFragment;
@@ -26,12 +26,20 @@ import roboguice.fragment.RoboFragment;
  */
 public class GoogleMapFragment extends RoboFragment {
 
-    private List<Listing> mListings;
     public GoogleMap map;
+    public GoogleMap.OnMyLocationChangeListener mListener;
+    // TODO: ^ this is shit
 
-    public GoogleMapFragment(List<Listing> listings) {
-        mListings = listings;
-    }
+    @Inject
+    CameraUpdateFactoryWrapperInterface cameraUpdateFactory;
+
+    @Inject
+    MarkerOptionsFactoryWrapperInterface markerOptionsFactory;
+
+    @Inject
+    ListingsInterface mListings;
+
+    public GoogleMapFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,19 +66,20 @@ public class GoogleMapFragment extends RoboFragment {
         }
     }
 
-    private void setupMap() {
+    public void setupMap() {
         map.setMyLocationEnabled(true);
         addMarkers();
-        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+        mListener = new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
                 if (location != null) {
                     LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
+                    map.animateCamera(cameraUpdateFactory.newLatLngZoom(myLatLng, 15.f));
                     map.setOnMyLocationChangeListener(null);
                 }
             }
-        });
+        };
+        map.setOnMyLocationChangeListener(mListener);
     }
 
     @Override
@@ -82,10 +91,10 @@ public class GoogleMapFragment extends RoboFragment {
     }
 
     public void addMarkers() {
-        for(Listing tempListing : mListings) {
+        for(Listing tempListing : mListings.getListings()) {
             if (tempListing.getGeoCode() != null) {
                 LatLng coordinates = new LatLng(Double.parseDouble(tempListing.getGeoCode().getLatitude()), Double.parseDouble(tempListing.getGeoCode().getLongitude()));
-                map.addMarker(new MarkerOptions().position(coordinates).title(tempListing.getName()));
+                map.addMarker(markerOptionsFactory.getOptions(tempListing.getName(), coordinates));
             }
         }
     }

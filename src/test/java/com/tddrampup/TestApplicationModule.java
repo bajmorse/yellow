@@ -1,6 +1,10 @@
 package com.tddrampup;
 
 import com.google.inject.AbstractModule;
+import com.tddrampup.factories.CameraUpdateFactoryWrapperInterface;
+import com.tddrampup.factories.FakeCameraUpdateFactoryWrapper;
+import com.tddrampup.factories.MarkerOptionsFactoryWrapper;
+import com.tddrampup.factories.MarkerOptionsFactoryWrapperInterface;
 import com.tddrampup.singletons.FakeListings;
 import com.tddrampup.singletons.ListingsInterface;
 
@@ -11,5 +15,7 @@ public class TestApplicationModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ListingsInterface.class).to(FakeListings.class);
+        bind(CameraUpdateFactoryWrapperInterface.class).to(FakeCameraUpdateFactoryWrapper.class);
+        bind(MarkerOptionsFactoryWrapperInterface.class).to(MarkerOptionsFactoryWrapper.class);
     }
 }

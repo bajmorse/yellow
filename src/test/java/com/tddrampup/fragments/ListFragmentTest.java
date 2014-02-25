@@ -10,12 +10,16 @@ import com.tddrampup.R;
 import com.tddrampup.RobolectricTestRunnerWithInjection;
 import com.tddrampup.activities.MainActivity;
 import com.tddrampup.adapters.ListingAdapter;
+import com.tddrampup.models.Listing;
+import com.tddrampup.singletons.FakeListings;
 import com.tddrampup.singletons.ListingsInterface;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+
+import java.util.ArrayList;
 
 import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -44,8 +48,9 @@ public class ListFragmentTest {
     @Before
     public void setUp() throws Exception {
         mMainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        mListings.setListings(new ArrayList<Listing>());
         addFragment();
-        mListings.setListings(null); // Must be after addFragment() for loading to show
+        ((FakeListings) mListings).createFakeData(); // Must be after addFragment() for loading to show
         mListView = (ListView) mListFragment.getView().findViewById(R.id.list_view);
         ListingAdapter listingAdapter = new ListingAdapter(mMainActivity.getLayoutInflater(), mListings.getListings());
         mListView.setAdapter(listingAdapter);

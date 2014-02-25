@@ -47,7 +47,7 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
 
     @Override
     public void onMapButtonClicked(){
-        GoogleMapFragment googleMapFragment = new GoogleMapFragment(mListings.getListings());
+        GoogleMapFragment googleMapFragment = new GoogleMapFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_activity, googleMapFragment, "MY_GOOGLE_MAP_FRAGMENT");
         transaction.addToBackStack(null);

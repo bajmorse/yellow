@@ -25,7 +25,6 @@ public class MainActivityTest {
 
     @Before
     public void setUp() throws Exception {
-        mListings.setListings(null);
         mMainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
     }
 

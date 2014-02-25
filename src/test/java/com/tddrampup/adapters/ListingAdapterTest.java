@@ -30,7 +30,6 @@ public class ListingAdapterTest {
 
     @Before
     public void setUp() throws Exception {
-        mListings.setListings(null);
         mActivity = Robolectric.buildActivity(Activity.class).create().visible().get();
         mListingAdapter = new ListingAdapter(mActivity.getLayoutInflater(), mListings.getListings());
     }
