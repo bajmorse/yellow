@@ -19,6 +19,11 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name=".contentProviders.YellowContentProvider"
+            android:authorities="com.tddrampup.contentProviders" >
+        </provider>
+
         <uses-feature
             android:glEsVersion="0x00020000"
             android:required="true"/>
