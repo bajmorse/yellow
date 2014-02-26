@@ -25,6 +25,7 @@ public class HomeFragmentTest {
     private HomeFragment mHomeFragment;
     private Button listButton;
     private Button mapButton;
+    private Button searchButton;
 
     private void addFragment() {
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
@@ -48,6 +49,7 @@ public class HomeFragmentTest {
         mHomeFragment.mListener = mock(HomeFragment.onItemClickedListener.class);
         listButton = (Button) mHomeFragment.getView().findViewById(R.id.list_button);
         mapButton = (Button) mHomeFragment.getView().findViewById(R.id.map_button);
+        searchButton = (Button) mHomeFragment.getView().findViewById(R.id.search_button);
     }
 
     @Test
@@ -72,5 +74,11 @@ public class HomeFragmentTest {
     public void MapButtonClick_shouldCallMapClickListener() throws Exception {
         mapButton.performClick();
         verify(mHomeFragment.mListener).onMapButtonClicked();
+    }
+
+    @Test
+    public void SearchButtonClick_shouldCallSearchClickListener() throws Exception {
+        searchButton.performClick();
+        verify(mHomeFragment.mListener).onSearchButtonClicked();
     }
 }

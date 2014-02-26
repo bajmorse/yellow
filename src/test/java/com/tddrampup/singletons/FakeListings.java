@@ -56,4 +56,24 @@ public class FakeListings implements ListingsInterface {
     public void setListings(List<Listing> value){
         mListings = value;
     }
+
+    @Override
+    public String getWhatQuery() {
+        return null;
+    }
+
+    @Override
+    public void setWhatQuery(String whatQuery) {
+
+    }
+
+    @Override
+    public String getWhereQuery() {
+        return null;
+    }
+
+    @Override
+    public void setWhereQuery(String whereQuery) {
+
+    }
 }

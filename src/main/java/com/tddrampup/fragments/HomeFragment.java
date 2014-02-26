@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.tddrampup.R;
 
@@ -29,6 +30,9 @@ public class HomeFragment extends RoboFragment {
 
         final Button listButton = (Button) rootView.findViewById(R.id.list_button);
         final Button mapButton = (Button) rootView.findViewById(R.id.map_button);
+        final Button searchButton = (Button) rootView.findViewById(R.id.search_button);
+        final EditText what = (EditText) rootView.findViewById(R.id.what_editText);
+        final EditText where = (EditText) rootView.findViewById(R.id.where_editText);
 
         listButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -40,6 +44,19 @@ public class HomeFragment extends RoboFragment {
                 mListener.onMapButtonClicked();
             }
         });
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mListener.onSearchButtonClicked();
+            }
+        });
+        searchButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                what.setText("Restaurants");
+                where.setText("Toronto");
+                return false;
+            }
+        });
 
         return rootView;
     }
@@ -47,7 +64,8 @@ public class HomeFragment extends RoboFragment {
     public interface onItemClickedListener {
         public void onListButtonClicked();
         public void onMapButtonClicked();
-    }
+        public void onSearchButtonClicked();
+     }
 
     @Override
     public void onAttach(Activity activity) {

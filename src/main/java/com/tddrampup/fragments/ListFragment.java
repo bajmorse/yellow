@@ -26,22 +26,42 @@ import roboguice.fragment.RoboFragment;
  */
 public class ListFragment extends RoboFragment {
 
-    private static final String mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=Restaurants&where=Toronto&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=4nd67ycv3yeqtg97dku7m845";
+    private static final String API_KEY = "4nd67ycv3yeqtg97dku7m845";
+    private static final String DEFAULT_WHAT = "Restaurants";
+    private static final String DEFAULT_WHERE = "Toronto";
 
     private ListView mListView;
     private ListingAdapter mListingAdapter;
     private LayoutInflater mLayoutInflater;
     private VolleyServiceLayer volleyServiceLayer;
     private ProgressDialog mProgressDialog;
+    private String mUrl;
+    private boolean allowNetworkCall;
+
+    public String mWhat;
+    public String mWhere;
+    //TODO don't make these public
 
     public onListViewItemClickedListener mListener;
 
     @Inject
     ListingsInterface mListings;
 
+    public ListFragment() {
+        mWhat = DEFAULT_WHAT;
+        mWhere = DEFAULT_WHERE;
+    }
+
+    public ListFragment(final String what, final String where) {
+        mWhat = what;
+        mWhere = where;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=" + mWhat + "&where=" + mWhere + "&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=" + API_KEY;
+
     }
 
     @Override
@@ -59,13 +79,21 @@ public class ListFragment extends RoboFragment {
             }
         });
 
-        if (mListings.getListings().isEmpty()){
+        if (mWhat.equals(mListings.getWhatQuery()) && mWhere.equals(mListings.getWhereQuery())) {
+            allowNetworkCall = false;
+        } else {
+            allowNetworkCall = true;
+            mListings.setWhatQuery(mWhat);
+            mListings.setWhereQuery(mWhere);
+        }
+
+        if (allowNetworkCall) {
             showLoading();
             volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
             volleyServiceLayer.GetListings(mUrl);
         }
-        else{
+        else {
             setupAdapter();
         }
 
@@ -84,6 +112,10 @@ public class ListFragment extends RoboFragment {
 
     private void hideLoading() {
         mProgressDialog.dismiss();
+    }
+
+    public boolean isProgressDialogShowing() {
+        return mProgressDialog.isShowing();
     }
 
     @Override
@@ -117,9 +149,5 @@ public class ListFragment extends RoboFragment {
         mListingAdapter = new ListingAdapter(mLayoutInflater, mListings.getListings());
         mListView.setAdapter(mListingAdapter);
         mListingAdapter.notifyDataSetChanged();
-    }
-
-    public boolean isProgressDialogShowing() {
-        return mProgressDialog.isShowing();
     }
 }

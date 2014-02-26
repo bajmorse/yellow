@@ -12,12 +12,8 @@ public interface ListingsInterface {
 //    public static Listings getInstance();
     public List<Listing> getListings();
     public void setListings(List<Listing> value);
-
-//    public Listing getListing(){
-//        return this.mListing;
-//    }
-//
-//    public void setListing(Listing value){
-//        mListing = value;
-//    }
+    public String getWhatQuery();
+    public void setWhatQuery(String whatQuery);
+    public String getWhereQuery();
+    public void setWhereQuery(String whereQuery);
 }

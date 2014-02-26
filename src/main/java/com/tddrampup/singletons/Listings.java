@@ -14,6 +14,8 @@ import java.util.List;
 public class Listings implements ListingsInterface {
 
     private List<Listing> mListings;
+    private String mWhatQuery;
+    private String mWhereQuery;
 
     @Inject
     public Listings() {
@@ -26,6 +28,22 @@ public class Listings implements ListingsInterface {
 
     public void setListings(List<Listing> value){
         mListings = value;
+    }
+
+    public String getWhatQuery() {
+        return this.mWhatQuery;
+    }
+
+    public void setWhatQuery(String whatQuery) {
+        this.mWhatQuery = whatQuery;
+    }
+
+    public String getWhereQuery() {
+        return mWhereQuery;
+    }
+
+    public void setWhereQuery(String whereQuery) {
+        this.mWhereQuery = whereQuery;
     }
 
 //    public Listing getListing(){
