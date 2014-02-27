@@ -10,8 +10,8 @@ public class PreviousQueryTable {
 
     public static final String PREVIOUS_QUERY_TABLE = "previousQueryTable";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_WHAT = "what";
-    public static final String COLUMN_WHERE = "where";
+    public static final String COLUMN_WHAT = "whatQuery";
+    public static final String COLUMN_WHERE = "whereQuery";
 
     private static final String DATABASE_CREATE = "create table "
             + PREVIOUS_QUERY_TABLE

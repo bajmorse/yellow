@@ -17,6 +17,7 @@ import com.tddrampup.adapters.ListingAdapter;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.ListingsTableHelper;
+import com.tddrampup.databases.PreviousQueryTableHelper;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
@@ -84,15 +85,13 @@ public class ListFragment extends RoboFragment {
             }
         });
 
-        // kljjjjjjjjjkjjjjjjjjjjjjjjjjjjjjjj
-        if (mWhat.equals(mListings.getWhatQuery()) && mWhere.equals(mListings.getWhereQuery())) {
+        List<String> previousQuery = PreviousQueryTableHelper.getQuery(getActivity());
+        if (mWhat.equals(previousQuery.get(0)) && mWhere.equals(previousQuery.get(1))) {
             allowNetworkCall = false;
         } else {
             allowNetworkCall = true;
-            mListings.setWhatQuery(mWhat);
-            mListings.setWhereQuery(mWhere);
+            PreviousQueryTableHelper.setQuery(getActivity(), mWhat, mWhere);
         }
-        //jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 
         if (allowNetworkCall) {
             showLoading();

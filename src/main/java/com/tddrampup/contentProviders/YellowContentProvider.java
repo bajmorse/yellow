@@ -11,9 +11,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tddrampup.databases.ListingsTable;
-import com.tddrampup.databases.ListingsTableHelper;
 import com.tddrampup.databases.PreviousQueryTable;
-import com.tddrampup.databases.PreviousQueryTableHelper;
+import com.tddrampup.databases.YellowDatabaseHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,22 +22,23 @@ import java.util.HashSet;
  * Created by WX009-PC on 2/26/14.
  */
 public class YellowContentProvider extends ContentProvider {
+
     // Database
     private SQLiteDatabase yellowDatabase;
+
+    // Helper
+    private YellowDatabaseHelper yellowDatabaseHelper;
 
     // Table Names
     private static final String LISTINGS_TABLE = ListingsTable.LISTINGS_TABLE;
     private static final String PREVIOUS_QUERY_TABLE = PreviousQueryTable.PREVIOUS_QUERY_TABLE;
-
-    // Helpers
-    private ListingsTableHelper listingsTableHelper;
-    private PreviousQueryTableHelper previousQueryTableHelper;
 
     // Content provider fields
     private static final String AUTHORITY = "com.tddrampup.contentProviders";
     private static final String LISTINGS_PATH = "listings";
     private static final String QUERY_PATH = "previousQuery";
 
+    // URIs
     public static final Uri CONTENT_URI_LISTINGS = Uri.parse("content://" + AUTHORITY + "/" + LISTINGS_PATH);
     public static final Uri CONTENT_URI_QUERY = Uri.parse("content://" + AUTHORITY + "/" + QUERY_PATH);
 
@@ -68,14 +68,11 @@ public class YellowContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        listingsTableHelper = new ListingsTableHelper(getContext());
-        previousQueryTableHelper = new PreviousQueryTableHelper(getContext());
-
-        yellowDatabase = listingsTableHelper.getWritableDatabase();
-
-        if(yellowDatabase == null) {
-            Log.d("DEBUG", "Database is null!");
-            return false;
+        Log.d("DATABASE", "MAKING THE TABLEZ!!!");
+        yellowDatabaseHelper = new YellowDatabaseHelper(getContext());
+        yellowDatabase = yellowDatabaseHelper.getWritableDatabase();
+        if (yellowDatabase == null) {
+           return false;
         } else {
             return true;
         }
@@ -102,12 +99,7 @@ public class YellowContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         // Using SQLiteQueryBuilder instead of query() method
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-
-        // check if the caller has requested a column which does not exists
         checkColumns(projection);
-
-        // Set the table
-//        queryBuilder.setTables(ListingsTable.LISTINGS_TABLE);
 
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
@@ -132,10 +124,7 @@ public class YellowContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-
-        yellowDatabase = listingsTableHelper.getWritableDatabase();
         Cursor cursor = queryBuilder.query(yellowDatabase, projection, selection, selectionArgs, null, null, sortOrder);
-        // make sure that potential listeners are getting notified
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -143,22 +132,18 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = uriMatcher.match(uri);
-        yellowDatabase = listingsTableHelper.getWritableDatabase();
         long id = 0;
 
         switch (uriType) {
             case LISTINGS:
                 id = yellowDatabase.insert(LISTINGS_TABLE, null, values);
-                yellowDatabase.close();
                 break;
             case PREVIOUS_QUERY:
                 id = yellowDatabase.insert(PREVIOUS_QUERY_TABLE, null, values);
-                yellowDatabase.close();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-
         getContext().getContentResolver().notifyChange(uri, null);
 
         switch (uriType) {
@@ -174,7 +159,6 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        yellowDatabase = listingsTableHelper.getWritableDatabase();
         int rowsDeleted = 0;
         String id;
 
@@ -211,7 +195,6 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        yellowDatabase = listingsTableHelper.getWritableDatabase();
         int rowsUpdated = 0;
         String id;
 

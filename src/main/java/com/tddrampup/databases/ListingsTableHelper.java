@@ -2,8 +2,6 @@ package com.tddrampup.databases;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
 import com.tddrampup.contentProviders.YellowContentProvider;
@@ -16,24 +14,7 @@ import java.util.List;
 /**
  * Created by WX009-PC on 2/26/14.
  */
-public class ListingsTableHelper extends SQLiteOpenHelper {
-
-    private static final String DATABASE_NAME = "yellow.db";
-    private static final int DATABASE_VERSION = 1;
-
-    public ListingsTableHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        ListingsTable.onCreate(db);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        ListingsTable.onUpgrade(db, oldVersion, newVersion);
-    }
+public class ListingsTableHelper {
 
     public static void addListings(List<Listing> listings, Context context) {
         Uri uri = YellowContentProvider.CONTENT_URI_LISTINGS;
@@ -107,7 +88,7 @@ public class ListingsTableHelper extends SQLiteOpenHelper {
             values.put(ListingsTable.COLUMN_LONGITUDE, "");
         }
 
-        Uri uri = context.getContentResolver().insert(YellowContentProvider.CONTENT_URI_LISTINGS, values);
+        context.getContentResolver().insert(YellowContentProvider.CONTENT_URI_LISTINGS, values);
     }
 
     public static void updateListing(Listing listing, Context context) {
