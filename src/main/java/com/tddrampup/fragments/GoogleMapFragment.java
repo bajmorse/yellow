@@ -1,5 +1,6 @@
 package com.tddrampup.fragments;
 
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 import com.tddrampup.R;
+import com.tddrampup.contentProviders.YellowContentProvider;
+import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.factories.CameraUpdateFactoryWrapperInterface;
 import com.tddrampup.factories.MarkerOptionsFactoryWrapperInterface;
-import com.tddrampup.models.Listing;
-import com.tddrampup.singletons.ListingsInterface;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.fragment.RoboFragment;
@@ -36,8 +37,8 @@ public class GoogleMapFragment extends RoboFragment {
     @Inject
     MarkerOptionsFactoryWrapperInterface markerOptionsFactory;
 
-    @Inject
-    ListingsInterface mListings;
+//    @Inject
+//    ListingsInterface mListings;
 
     public GoogleMapFragment() {}
 
@@ -91,11 +92,20 @@ public class GoogleMapFragment extends RoboFragment {
     }
 
     public void addMarkers() {
-        for(Listing tempListing : mListings.getListings()) {
-            if (tempListing.getGeoCode() != null) {
-                LatLng coordinates = new LatLng(Double.parseDouble(tempListing.getGeoCode().getLatitude()), Double.parseDouble(tempListing.getGeoCode().getLongitude()));
-                map.addMarker(markerOptionsFactory.getOptions(tempListing.getName(), coordinates));
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI, null, null, null, null);
+        int latitudeIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LATITUDE);
+        int longitudeIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LONGITUDE);
+        int nameIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
+        cursor.moveToFirst();
+        while(cursor.moveToNext()) {
+            String latitude = cursor.getString(latitudeIndex);
+            String longitude = cursor.getString(longitudeIndex);
+            String name = cursor.getString(nameIndex);
+            if(!latitude.isEmpty() && !longitude.isEmpty()) {
+                LatLng coordinates = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                map.addMarker(markerOptionsFactory.getOptions(name, coordinates));
             }
         }
+        cursor.close();
     }
 }

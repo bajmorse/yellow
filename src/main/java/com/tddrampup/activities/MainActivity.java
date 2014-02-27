@@ -2,6 +2,7 @@ package com.tddrampup.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.inputmethod.InputMethodManager;
@@ -10,6 +11,9 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.tddrampup.R;
+import com.tddrampup.contentProviders.YellowContentProvider;
+import com.tddrampup.databases.ListingsTable;
+import com.tddrampup.databases.ListingsTableHelper;
 import com.tddrampup.fragments.DetailFragment;
 import com.tddrampup.fragments.GoogleMapFragment;
 import com.tddrampup.fragments.HomeFragment;
@@ -86,10 +90,21 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
 
     @Override
     public void onListViewItemClicked(int position) {
-        showLoading();
-        Listing listing = mListings.getListings().get(position);
-        volleyServiceLayer.volleyServiceLayerCallback = new Callback();
-        volleyServiceLayer.GetListing(listing.getId());
+        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI, null, null, null, null);
+        int listingIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LISTING_ID);
+        int websiteUrlIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+        cursor.moveToPosition(position);
+        String listingId = cursor.getString(listingIdIndex);
+        String websiteUrl = cursor.getString(websiteUrlIndex);
+        cursor.close();
+
+        if (websiteUrl.isEmpty()) {
+            showLoading();
+            volleyServiceLayer.volleyServiceLayerCallback = new Callback();
+            volleyServiceLayer.GetListing(listingId);
+        } else {
+            launchDetailFragment(listingId);
+        }
     }
 
     public class Callback implements VolleyServiceLayerCallback {
@@ -100,12 +115,18 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
         @Override
         public void itemCallbackCall(Listing listing) {
             hideLoading();
-            DetailFragment detailFragment = new DetailFragment(listing);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.main_activity, detailFragment, "MY_DETAIL_FRAGMENT");
-            transaction.addToBackStack(null);
-            transaction.commit();
+            String listingId = listing.getId();
+            ListingsTableHelper.updateListing(listing, getApplicationContext());
+            launchDetailFragment(listingId);
         }
+    }
+
+    private void launchDetailFragment(String listingId) {
+        DetailFragment detailFragment = new DetailFragment(listingId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_activity, detailFragment, "MY_DETAIL_FRAGMENT");
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void showLoading() {

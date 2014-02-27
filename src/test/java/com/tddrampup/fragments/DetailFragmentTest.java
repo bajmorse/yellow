@@ -38,7 +38,7 @@ public class DetailFragmentTest{
         mListing = mListings.getListings().get(0);
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        detailFragment = new DetailFragment(mListing);
+        detailFragment = new DetailFragment(mListing.getId());
         fragmentTransaction.add(detailFragment, null);
         fragmentTransaction.commit();
     }

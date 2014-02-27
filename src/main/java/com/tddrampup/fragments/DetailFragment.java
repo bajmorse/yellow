@@ -1,5 +1,6 @@
 package com.tddrampup.fragments;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tddrampup.R;
-import com.tddrampup.models.Listing;
+import com.tddrampup.contentProviders.YellowContentProvider;
+import com.tddrampup.databases.ListingsTable;
 
 import roboguice.fragment.RoboFragment;
 
@@ -16,13 +18,13 @@ import roboguice.fragment.RoboFragment;
  */
 public class DetailFragment extends RoboFragment {
 
-    private Listing mListing;
+    private String mListingId;
     private TextView nameTextView;
     private TextView locationTextView;
     private TextView websiteTextView;
 
-    public DetailFragment(Listing listing) {
-        mListing = listing;
+    public DetailFragment(String listingId) {
+        mListingId = listingId;
     }
 
     @Override
@@ -42,8 +44,20 @@ public class DetailFragment extends RoboFragment {
     }
 
     public void populateTextViews() {
-        nameTextView.setText(mListing.getName());
-        locationTextView.setText(mListing.getAddress().getStreet() + ", " + mListing.getAddress().getCity() + ", " + mListing.getAddress().getProv() + ", " + mListing.getAddress().getPcode());
-        websiteTextView.setText(mListing.getMerchantUrl());
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI, null, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
+        int nameIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
+        int streetIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_STREET);
+        int cityIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_CITY);
+        int websiteIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+        cursor.moveToFirst();
+        String name = cursor.getString(nameIdIndex);
+        String street = cursor.getString(streetIdIndex);
+        String city = cursor.getString(cityIdIndex);
+        String website = cursor.getString(websiteIdIndex);
+        cursor.close();
+
+        nameTextView.setText(name);
+        locationTextView.setText(street + ", " + city);
+        websiteTextView.setText(website);
     }
 }

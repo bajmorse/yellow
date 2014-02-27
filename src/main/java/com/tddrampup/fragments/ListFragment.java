@@ -1,28 +1,22 @@
 package com.tddrampup.fragments;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.tddrampup.R;
 import com.tddrampup.adapters.ListingAdapter;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
+import com.tddrampup.databases.ListingsTableHelper;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
@@ -35,7 +29,7 @@ import roboguice.fragment.RoboFragment;
 /**
  * Created by WX009-PC on 2/19/14.
  */
-public class ListFragment extends RoboFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ListFragment extends RoboFragment {
 
     private static final String API_KEY = "4nd67ycv3yeqtg97dku7m845";
     private static final String DEFAULT_WHAT = "Restaurants";
@@ -73,7 +67,6 @@ public class ListFragment extends RoboFragment implements LoaderManager.LoaderCa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=" + mWhat + "&where=" + mWhere + "&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=" + API_KEY;
-
     }
 
     @Override
@@ -147,8 +140,7 @@ public class ListFragment extends RoboFragment implements LoaderManager.LoaderCa
     class Callback implements VolleyServiceLayerCallback {
         public void listCallbackCall(List<Listing> listings) {
             hideLoading();
-            mListings.setListings(listings);
-            addListings();
+            ListingsTableHelper.addListings(listings, getActivity());
             setupAdapter();
         }
 
@@ -159,51 +151,28 @@ public class ListFragment extends RoboFragment implements LoaderManager.LoaderCa
     }
 
     private void setupAdapter(){
-        mListingAdapter = new ListingAdapter(mLayoutInflater, mListings.getListings());
-        mListView.setAdapter(mListingAdapter);
-        mListingAdapter.notifyDataSetChanged();
+        final String fields[] = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
+        final int views[] = { R.id.listing_title, R.id.listing_address, R.id.listing_city };
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI, null, null, null, null);
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);
+        mListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
-    private void addListings() {
-        for (Listing listing : mListings.getListings()) {
-            addListing(listing);
-        }
-    }
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        String[] projection = {ListingsTable.COLUMN_ID, ListingsTable.COLUMN_NAME };
+//        CursorLoader cursorLoader = new CursorLoader(getActivity(), YellowContentProvider.CONTENT_URI, projection, null, null, null);
+//        return cursorLoader;
+//    }
 
-    public void addListing(Listing listing) {
-
-        Log.d("DEBUG", "URL: " + listing.getMerchantUrl());
-        Log.d("DEBUG", "Street: " + listing.getAddress().getStreet());
-
-
-        ContentValues values = new ContentValues();
-        values.put(ListingsTable.COLUMN_LISTING_ID, listing.getId());
-        values.put(ListingsTable.COLUMN_NAME, listing.getName());
-        values.put(ListingsTable.COLUMN_STREET, listing.getAddress().getStreet());
-        values.put(ListingsTable.COLUMN_CITY, listing.getAddress().getCity());
-        values.put(ListingsTable.COLUMN_MERCHANT_URL, "www.somewebsite.com");
-        values.put(ListingsTable.COLUMN_LATITUDE, "lat");
-        values.put(ListingsTable.COLUMN_LONGITUDE, "long");
-
-        Uri uri = getActivity().getContentResolver().insert(YellowContentProvider.CONTENT_URI, values);
-        Toast.makeText(getActivity(), "Inserted " + uri + " into the database!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = {ListingsTable.COLUMN_ID, ListingsTable.COLUMN_NAME };
-        CursorLoader cursorLoader = new CursorLoader(getActivity(), YellowContentProvider.CONTENT_URI, projection, null, null, null);
-        return cursorLoader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursorAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
-    }
-
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//        mCursorAdapter.swapCursor(data);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> loader) {
+//        mCursorAdapter.swapCursor(null);
+//    }
 }

@@ -1,6 +1,7 @@
 package com.tddrampup.contentProviders;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -23,7 +24,7 @@ import java.util.HashSet;
 public class YellowContentProvider extends ContentProvider {
 
     // Database and helper
-    private ListingsTableHelper listingsTable;
+    private ListingsTableHelper listingsTableHelper;
     private SQLiteDatabase listingsDatabase;
 
     // Content provider fields
@@ -37,8 +38,8 @@ public class YellowContentProvider extends ContentProvider {
     private static final int LISTINGS_ID = 2;
 
     // Content types
-//    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/listings";
-//    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/listing";
+    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/listings";
+    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/listing";
 
     // Projection map
     private static HashMap<String, String> listingsMap;
@@ -53,11 +54,11 @@ public class YellowContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        listingsTable = new ListingsTableHelper(getContext());
-        listingsDatabase = listingsTable.getWritableDatabase();
+        listingsTableHelper = new ListingsTableHelper(getContext());
+        listingsDatabase = listingsTableHelper.getWritableDatabase();
 
         if(listingsDatabase == null) {
-            Log.d("DEBUG", "Database is null! :O");
+            Log.d("DEBUG", "Database is null!");
             return false;
         } else {
             return true;
@@ -78,6 +79,7 @@ public class YellowContentProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
             case LISTINGS:
+                queryBuilder.setProjectionMap(listingsMap);
                 break;
             case LISTINGS_ID:
                 // adding the ID to the original query
@@ -87,7 +89,7 @@ public class YellowContentProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        listingsDatabase = listingsTable.getWritableDatabase();
+        listingsDatabase = listingsTableHelper.getWritableDatabase();
         Cursor cursor = queryBuilder.query(listingsDatabase, projection, selection, selectionArgs, null, null, sortOrder);
 
         // make sure that potential listeners are getting notified
@@ -113,7 +115,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = uriMatcher.match(uri);
-        listingsDatabase = listingsTable.getWritableDatabase();
+        listingsDatabase = listingsTableHelper.getWritableDatabase();
         long id = 0;
 
 //        Log.d("DEBUG", "Insert: " + uri.toString() + " Values: " + values.toString() + " TYPE: " + uriType);
@@ -135,7 +137,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        listingsDatabase = listingsTable.getWritableDatabase();
+        listingsDatabase = listingsTableHelper.getWritableDatabase();
         int rowsDeleted = 0;
 
         switch (uriType) {
@@ -160,7 +162,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        listingsDatabase = listingsTable.getWritableDatabase();
+        listingsDatabase = listingsTableHelper.getWritableDatabase();
         int rowsUpdated = 0;
 
         switch (uriType) {
