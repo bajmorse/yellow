@@ -44,7 +44,7 @@ public class DetailFragment extends RoboFragment {
     }
 
     public void populateTextViews() {
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI, null, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
         int nameIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
         int streetIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_STREET);
         int cityIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_CITY);

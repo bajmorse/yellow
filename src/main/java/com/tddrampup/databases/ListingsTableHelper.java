@@ -36,7 +36,7 @@ public class ListingsTableHelper extends SQLiteOpenHelper {
     }
 
     public static void addListings(List<Listing> listings, Context context) {
-        Uri uri = YellowContentProvider.CONTENT_URI;
+        Uri uri = YellowContentProvider.CONTENT_URI_LISTINGS;
         context.getContentResolver().delete(uri, null, null);
 
         for (Listing listing : listings) {
@@ -107,7 +107,7 @@ public class ListingsTableHelper extends SQLiteOpenHelper {
             values.put(ListingsTable.COLUMN_LONGITUDE, "");
         }
 
-        Uri uri = context.getContentResolver().insert(YellowContentProvider.CONTENT_URI, values);
+        Uri uri = context.getContentResolver().insert(YellowContentProvider.CONTENT_URI_LISTINGS, values);
     }
 
     public static void updateListing(Listing listing, Context context) {
@@ -120,6 +120,6 @@ public class ListingsTableHelper extends SQLiteOpenHelper {
         } else {
             values.put(ListingsTable.COLUMN_MERCHANT_URL, "");
         }
-        context.getContentResolver().update(YellowContentProvider.CONTENT_URI, values, ListingsTable.COLUMN_LISTING_ID + "=" + listingId, null);
+        context.getContentResolver().update(YellowContentProvider.CONTENT_URI_LISTINGS, values, ListingsTable.COLUMN_LISTING_ID + "=" + listingId, null);
     }
 }

@@ -73,8 +73,7 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
         String what = whatEditText.getText().toString();
         String where = whereEditText.getText().toString();
 
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow((whatEditText.isSelected() ? whatEditText : whereEditText).getWindowToken(), 0);
 
         if(!what.isEmpty() && !where.isEmpty()) {
@@ -90,7 +89,7 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
 
     @Override
     public void onListViewItemClicked(int position) {
-        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
         int listingIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LISTING_ID);
         int websiteUrlIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
         cursor.moveToPosition(position);

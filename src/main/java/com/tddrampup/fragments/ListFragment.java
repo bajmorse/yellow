@@ -84,6 +84,7 @@ public class ListFragment extends RoboFragment {
             }
         });
 
+        // kljjjjjjjjjkjjjjjjjjjjjjjjjjjjjjjj
         if (mWhat.equals(mListings.getWhatQuery()) && mWhere.equals(mListings.getWhereQuery())) {
             allowNetworkCall = false;
         } else {
@@ -91,6 +92,7 @@ public class ListFragment extends RoboFragment {
             mListings.setWhatQuery(mWhat);
             mListings.setWhereQuery(mWhere);
         }
+        //jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 
         if (allowNetworkCall) {
             showLoading();
@@ -153,7 +155,7 @@ public class ListFragment extends RoboFragment {
     private void setupAdapter(){
         final String fields[] = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
         final int views[] = { R.id.listing_title, R.id.listing_address, R.id.listing_city };
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI, null, null, null, null);
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);
         mListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -162,7 +164,7 @@ public class ListFragment extends RoboFragment {
 //    @Override
 //    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 //        String[] projection = {ListingsTable.COLUMN_ID, ListingsTable.COLUMN_NAME };
-//        CursorLoader cursorLoader = new CursorLoader(getActivity(), YellowContentProvider.CONTENT_URI, projection, null, null, null);
+//        CursorLoader cursorLoader = new CursorLoader(getActivity(), YellowContentProvider.CONTENT_URI_LISTINGS, projection, null, null, null);
 //        return cursorLoader;
 //    }
 
