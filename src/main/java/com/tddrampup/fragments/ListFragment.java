@@ -13,7 +13,6 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 import com.tddrampup.R;
-import com.tddrampup.adapters.ListingAdapter;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.ListingsTableHelper;
@@ -37,8 +36,6 @@ public class ListFragment extends RoboFragment {
     private static final String DEFAULT_WHERE = "Toronto";
 
     private ListView mListView;
-    private ListingAdapter mListingAdapter;
-    private SimpleCursorAdapter mCursorAdapter;
     private LayoutInflater mLayoutInflater;
     private VolleyServiceLayer volleyServiceLayer;
     private ProgressDialog mProgressDialog;

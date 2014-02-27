@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.PreviousQueryTable;
+import com.tddrampup.databases.SearchTable;
 import com.tddrampup.databases.YellowDatabaseHelper;
 
 import java.util.Arrays;
@@ -31,22 +32,27 @@ public class YellowContentProvider extends ContentProvider {
 
     // Table Names
     private static final String LISTINGS_TABLE = ListingsTable.LISTINGS_TABLE;
+    private static final String SEARCH_TABLE = SearchTable.SEARCH_TABLE;
     private static final String PREVIOUS_QUERY_TABLE = PreviousQueryTable.PREVIOUS_QUERY_TABLE;
 
     // Content provider fields
     private static final String AUTHORITY = "com.tddrampup.contentProviders";
     private static final String LISTINGS_PATH = "listings";
+    private static final String SEARCH_PATH = "listings";
     private static final String QUERY_PATH = "previousQuery";
 
     // URIs
     public static final Uri CONTENT_URI_LISTINGS = Uri.parse("content://" + AUTHORITY + "/" + LISTINGS_PATH);
+    public static final Uri CONTENT_URI_SEARCH_LISTINGS = Uri.parse("content://" + AUTHORITY + "/" + SEARCH_PATH);
     public static final Uri CONTENT_URI_QUERY = Uri.parse("content://" + AUTHORITY + "/" + QUERY_PATH);
 
     // URI integer values
     private static final int LISTINGS = 1;
     private static final int LISTINGS_ID = 2;
-    private static final int PREVIOUS_QUERY = 3;
-    private static final int PREVIOUS_QUERY_ID = 4;
+    private static final int SEARCH_LISTINGS = 3;
+    private static final int SEARCH_LISTINGS_ID = 4;
+    private static final int PREVIOUS_QUERY = 5;
+    private static final int PREVIOUS_QUERY_ID = 6;
 
 //    // Content types
 //    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/listings";
@@ -62,6 +68,8 @@ public class YellowContentProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, LISTINGS_PATH, LISTINGS);
         uriMatcher.addURI(AUTHORITY, LISTINGS_PATH + "/#", LISTINGS_ID);
+        uriMatcher.addURI(AUTHORITY, SEARCH_PATH, SEARCH_LISTINGS);
+        uriMatcher.addURI(AUTHORITY, SEARCH_PATH + "/#", SEARCH_LISTINGS_ID);
         uriMatcher.addURI(AUTHORITY, QUERY_PATH, PREVIOUS_QUERY);
         uriMatcher.addURI(AUTHORITY, QUERY_PATH + "/#", PREVIOUS_QUERY_ID);
     }
@@ -72,7 +80,7 @@ public class YellowContentProvider extends ContentProvider {
         yellowDatabaseHelper = new YellowDatabaseHelper(getContext());
         yellowDatabase = yellowDatabaseHelper.getWritableDatabase();
         if (yellowDatabase == null) {
-           return false;
+            return false;
         } else {
             return true;
         }
@@ -85,6 +93,10 @@ public class YellowContentProvider extends ContentProvider {
             case LISTINGS:
                 return ""; //TODO
             case LISTINGS_ID:
+                return ""; //TODO
+            case SEARCH_LISTINGS:
+                return ""; //TODO
+            case SEARCH_LISTINGS_ID:
                 return ""; //TODO
             case PREVIOUS_QUERY:
                 return ""; //TODO
@@ -112,6 +124,15 @@ public class YellowContentProvider extends ContentProvider {
                 // adding the ID to the original query
                 queryBuilder.appendWhere(ListingsTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
+            case SEARCH_LISTINGS:
+                queryBuilder.setTables(SEARCH_TABLE);
+                queryBuilder.setProjectionMap(projectionMap);
+                break;
+            case SEARCH_LISTINGS_ID:
+                queryBuilder.setTables(SEARCH_TABLE);
+                // adding the ID to the original query
+                queryBuilder.appendWhere(SearchTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+                break;
             case PREVIOUS_QUERY:
                 queryBuilder.setTables(PREVIOUS_QUERY_TABLE);
                 queryBuilder.setProjectionMap(projectionMap);
@@ -138,6 +159,9 @@ public class YellowContentProvider extends ContentProvider {
             case LISTINGS:
                 id = yellowDatabase.insert(LISTINGS_TABLE, null, values);
                 break;
+            case SEARCH_LISTINGS:
+                id = yellowDatabase.insert(SEARCH_TABLE, null, values);
+                break;
             case PREVIOUS_QUERY:
                 id = yellowDatabase.insert(PREVIOUS_QUERY_TABLE, null, values);
                 break;
@@ -149,6 +173,8 @@ public class YellowContentProvider extends ContentProvider {
         switch (uriType) {
             case LISTINGS:
                 return Uri.parse(LISTINGS_PATH + "/" + id);
+            case SEARCH_LISTINGS:
+                return Uri.parse(SEARCH_PATH + "/" + id);
             case PREVIOUS_QUERY:
                 return Uri.parse(QUERY_PATH + "/" + id);
             default:
@@ -172,6 +198,17 @@ public class YellowContentProvider extends ContentProvider {
                     rowsDeleted = yellowDatabase.delete(LISTINGS_TABLE, ListingsTable.COLUMN_ID + "=" + id, null);
                 } else {
                     rowsDeleted = yellowDatabase.delete(LISTINGS_TABLE, ListingsTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            case SEARCH_LISTINGS:
+                rowsDeleted = yellowDatabase.delete(SEARCH_TABLE, selection, selectionArgs);
+                break;
+            case SEARCH_LISTINGS_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = yellowDatabase.delete(SEARCH_TABLE, SearchTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsDeleted = yellowDatabase.delete(SEARCH_TABLE, SearchTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
             case PREVIOUS_QUERY:
@@ -210,6 +247,17 @@ public class YellowContentProvider extends ContentProvider {
                     rowsUpdated = yellowDatabase.update(LISTINGS_TABLE, values, ListingsTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
+            case SEARCH_LISTINGS:
+                rowsUpdated = yellowDatabase.update(SEARCH_TABLE, values, selection, selectionArgs);
+                break;
+            case SEARCH_LISTINGS_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = yellowDatabase.update(SEARCH_TABLE, values, SearchTable.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsUpdated = yellowDatabase.update(SEARCH_TABLE, values, SearchTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
             case PREVIOUS_QUERY:
                 rowsUpdated = yellowDatabase.update(PREVIOUS_QUERY_TABLE, values, selection, selectionArgs);
                 break;
@@ -238,6 +286,14 @@ public class YellowContentProvider extends ContentProvider {
                 ListingsTable.COLUMN_MERCHANT_URL,
                 ListingsTable.COLUMN_LATITUDE,
                 ListingsTable.COLUMN_LONGITUDE,
+                SearchTable.COLUMN_ID,
+                SearchTable.COLUMN_LISTING_ID,
+                SearchTable.COLUMN_NAME,
+                SearchTable.COLUMN_STREET,
+                SearchTable.COLUMN_CITY,
+                SearchTable.COLUMN_MERCHANT_URL,
+                SearchTable.COLUMN_LATITUDE,
+                SearchTable.COLUMN_LONGITUDE,
                 PreviousQueryTable.COLUMN_ID,
                 PreviousQueryTable.COLUMN_WHAT,
                 PreviousQueryTable.COLUMN_WHERE

@@ -55,7 +55,6 @@ public class DetailFragment extends RoboFragment {
         String city = cursor.getString(cityIdIndex);
         String website = cursor.getString(websiteIdIndex);
         cursor.close();
-
         nameTextView.setText(name);
         locationTextView.setText(street + ", " + city);
         websiteTextView.setText(website);

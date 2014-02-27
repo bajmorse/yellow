@@ -12,12 +12,12 @@ import com.tddrampup.models.Listing;
 import java.util.List;
 
 /**
- * Created by WX009-PC on 2/26/14.
+ * Created by WX009-PC on 2/27/14.
  */
-public class ListingsTableHelper {
+public class SearchTableHelper {
 
     public static void addListings(List<Listing> listings, Context context) {
-        Uri uri = YellowContentProvider.CONTENT_URI_LISTINGS;
+        Uri uri = YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS;
         context.getContentResolver().delete(uri, null, null);
 
         for (Listing listing : listings) {
@@ -29,66 +29,66 @@ public class ListingsTableHelper {
         ContentValues values = new ContentValues();
         String id = listing.getId();
         if (id != null) {
-            values.put(ListingsTable.COLUMN_LISTING_ID, id);
+            values.put(SearchTable.COLUMN_LISTING_ID, id);
         } else {
-            values.put(ListingsTable.COLUMN_LISTING_ID, "");
+            values.put(SearchTable.COLUMN_LISTING_ID, "");
         }
 
         String name = listing.getName();
         if (name != null) {
-            values.put(ListingsTable.COLUMN_NAME, name);
+            values.put(SearchTable.COLUMN_NAME, name);
         } else {
-            values.put(ListingsTable.COLUMN_NAME, "");
+            values.put(SearchTable.COLUMN_NAME, "");
         }
 
         final Address address = listing.getAddress();
         if (address != null) {
             String street = address.getStreet();
             if (street != null) {
-                values.put(ListingsTable.COLUMN_STREET, street);
+                values.put(SearchTable.COLUMN_STREET, street);
             } else {
-                values.put(ListingsTable.COLUMN_STREET, "");
+                values.put(SearchTable.COLUMN_STREET, "");
             }
 
             String city = address.getCity();
             if (city != null) {
-                values.put(ListingsTable.COLUMN_CITY, city);
+                values.put(SearchTable.COLUMN_CITY, city);
             } else {
-                values.put(ListingsTable.COLUMN_CITY, "");
+                values.put(SearchTable.COLUMN_CITY, "");
             }
         } else {
-            values.put(ListingsTable.COLUMN_STREET, "");
-            values.put(ListingsTable.COLUMN_CITY, "");
+            values.put(SearchTable.COLUMN_STREET, "");
+            values.put(SearchTable.COLUMN_CITY, "");
         }
 
         String url = listing.getMerchantUrl(); // Will be null
         if (url != null) {
-            values.put(ListingsTable.COLUMN_MERCHANT_URL, url);
+            values.put(SearchTable.COLUMN_MERCHANT_URL, url);
         } else {
-            values.put(ListingsTable.COLUMN_MERCHANT_URL, "");
+            values.put(SearchTable.COLUMN_MERCHANT_URL, "");
         }
 
         final GeoCode geoCode = listing.getGeoCode();
         if (geoCode != null) {
             String latitude = geoCode.getLatitude();
             if (latitude != null) {
-                values.put(ListingsTable.COLUMN_LATITUDE, latitude);
+                values.put(SearchTable.COLUMN_LATITUDE, latitude);
             } else {
-                values.put(ListingsTable.COLUMN_LATITUDE, "");
+                values.put(SearchTable.COLUMN_LATITUDE, "");
             }
 
             String longitude = geoCode.getLongitude();
             if (longitude != null) {
-                values.put(ListingsTable.COLUMN_LONGITUDE, longitude);
+                values.put(SearchTable.COLUMN_LONGITUDE, longitude);
             } else {
-                values.put(ListingsTable.COLUMN_LONGITUDE, "");
+                values.put(SearchTable.COLUMN_LONGITUDE, "");
             }
         } else {
-            values.put(ListingsTable.COLUMN_LATITUDE, "");
-            values.put(ListingsTable.COLUMN_LONGITUDE, "");
+            values.put(SearchTable.COLUMN_LATITUDE, "");
+            values.put(SearchTable.COLUMN_LONGITUDE, "");
         }
 
-        context.getContentResolver().insert(YellowContentProvider.CONTENT_URI_LISTINGS, values);
+        context.getContentResolver().insert(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, values);
     }
 
     public static void updateListing(Listing listing, Context context) {
@@ -97,10 +97,10 @@ public class ListingsTableHelper {
 
         ContentValues values = new ContentValues();
         if (merchantUrl != null) {
-            values.put(ListingsTable.COLUMN_MERCHANT_URL, merchantUrl);
+            values.put(SearchTable.COLUMN_MERCHANT_URL, merchantUrl);
         } else {
-            values.put(ListingsTable.COLUMN_MERCHANT_URL, "");
+            values.put(SearchTable.COLUMN_MERCHANT_URL, "");
         }
-        context.getContentResolver().update(YellowContentProvider.CONTENT_URI_LISTINGS, values, ListingsTable.COLUMN_LISTING_ID + "=" + listingId, null);
+        context.getContentResolver().update(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, values, SearchTable.COLUMN_LISTING_ID + "=" + listingId, null);
     }
 }

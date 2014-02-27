@@ -20,12 +20,14 @@ public class YellowDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         PreviousQueryTable.onCreate(db);
         ListingsTable.onCreate(db);
+        SearchTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         PreviousQueryTable.onUpgrade(db, oldVersion, newVersion);
         ListingsTable.onUpgrade(db, oldVersion, newVersion);
+        SearchTable.onUpgrade(db, oldVersion, newVersion);
     }
 }
 
