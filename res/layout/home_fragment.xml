@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/what_editText"
             android:editable="true"
+            android:selectAllOnFocus="true"
             android:hint="What would you like to search?" />
 
         <EditText
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/where_editText"
             android:editable="true"
+            android:selectAllOnFocus="true"
             android:hint="Where would you like to search?" />
 
         <Button
