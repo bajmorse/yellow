@@ -4,7 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 /**
- * Created by WX009-PC on 2/27/14.
+ * Created by: WX009-PC
+ * on: 2/27/14.
  */
 public class SearchTable {
 

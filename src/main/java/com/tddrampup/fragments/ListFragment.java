@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.inject.Inject;
 import com.tddrampup.R;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
@@ -22,38 +21,32 @@ import com.tddrampup.databases.SearchTableHelper;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
-import com.tddrampup.singletons.ListingsInterface;
 
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
 
 /**
- * Created by WX009-PC on 2/19/14.
+ * Created by: WX009-PC
+ * on: 2/19/14.
  */
 public class ListFragment extends RoboFragment {
 
-    private static final String API_KEY = "4nd67ycv3yeqtg97dku7m845";
+    public static final String API_KEY = "4nd67ycv3yeqtg97dku7m845";
     private static final String MAX_LISTINGS = "40";
     private static final String DEFAULT_WHAT = "Restaurants";
     private static final String DEFAULT_WHERE = "Toronto";
 
     private ListView mListView;
-    private LayoutInflater mLayoutInflater;
-    private VolleyServiceLayer volleyServiceLayer;
     private ProgressDialog mProgressDialog;
     private String mUrl;
-    private boolean mAllowNetworkCall;
-    private boolean mIsSearchQuery;
+    private final boolean mIsSearchQuery;
 
-    public String mWhat;
-    public String mWhere;
-    //TODO don't make these public
+    public final String mWhat;
+    public final String mWhere;
 
     public onListViewItemClickedListener mListener;
-
-    @Inject
-    ListingsInterface mListings;
+    // TODO: ^ this is shit
 
     public ListFragment() {
         mWhat = DEFAULT_WHAT;
@@ -76,8 +69,7 @@ public class ListFragment extends RoboFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mLayoutInflater = inflater;
-        View rootView = mLayoutInflater.inflate(R.layout.list_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.list_fragment, container, false);
         mListView = (ListView) rootView.findViewById(R.id.list_view);
         mProgressDialog = new ProgressDialog(getActivity());
 
@@ -88,26 +80,24 @@ public class ListFragment extends RoboFragment {
             }
         });
 
+        boolean allowNetworkCall;
+
         if (mIsSearchQuery) {
             List<String> previousQuery = PreviousQueryTableHelper.getQuery(getActivity());
             if (mWhat.equals(previousQuery.get(0)) && mWhere.equals(previousQuery.get(1))) {
-                mAllowNetworkCall = false;
+                allowNetworkCall = false;
             } else {
-                mAllowNetworkCall = true;
+                allowNetworkCall = true;
                 PreviousQueryTableHelper.setQuery(getActivity(), mWhat, mWhere);
             }
         } else {
             Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
-            if (cursor.moveToFirst()) {
-                mAllowNetworkCall = false;
-            } else {
-                mAllowNetworkCall = true;
-            }
+            allowNetworkCall = !cursor.moveToFirst();
         }
 
-        if (mAllowNetworkCall) {
+        if (allowNetworkCall) {
             showLoading();
-            volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
+            VolleyServiceLayer volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
             volleyServiceLayer.GetListings(mUrl);
         }
@@ -144,12 +134,10 @@ public class ListFragment extends RoboFragment {
         final Cursor cursor;
         String[] fields;
         if (mIsSearchQuery) {
-            String[] tempFields = { SearchTable.COLUMN_NAME, SearchTable.COLUMN_STREET, SearchTable.COLUMN_CITY };
-            fields = tempFields;
+            fields = new String[]{ SearchTable.COLUMN_NAME, SearchTable.COLUMN_STREET, SearchTable.COLUMN_CITY };
             cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, SearchTableHelper.searchTableAdapterProjection, null, null, null);
         } else {
-            String[] tempFields = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
-            fields = tempFields;
+            fields = new String[]{ ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
             cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableAdapterProjection, null, null, null);
         }
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);

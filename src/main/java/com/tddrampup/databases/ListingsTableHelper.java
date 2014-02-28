@@ -12,7 +12,8 @@ import com.tddrampup.models.Listing;
 import java.util.List;
 
 /**
- * Created by WX009-PC on 2/26/14.
+ * Created by: WX009-PC
+ * on: 2/26/14.
  */
 public class ListingsTableHelper {
 
@@ -51,7 +52,7 @@ public class ListingsTableHelper {
         }
     }
 
-    private static void addListing(Listing listing, Context context) {
+    private static void addListing(Listing listing, Context context) { // TODO: do with SQL?
         ContentValues values = new ContentValues();
         String id = listing.getId();
         if (id != null) {

@@ -1,6 +1,7 @@
 package com.tddrampup.contentProviders;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -16,19 +17,16 @@ import com.tddrampup.databases.SearchTable;
 import com.tddrampup.databases.YellowDatabaseHelper;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
- * Created by WX009-PC on 2/26/14.
+ * Created by: WX009-PC
+ * on: 2/26/14.
  */
 public class YellowContentProvider extends ContentProvider {
 
     // Database
     private SQLiteDatabase yellowDatabase;
-
-    // Helper
-    private YellowDatabaseHelper yellowDatabaseHelper;
 
     // Table Names
     private static final String LISTINGS_TABLE = ListingsTable.LISTINGS_TABLE;
@@ -54,12 +52,15 @@ public class YellowContentProvider extends ContentProvider {
     private static final int PREVIOUS_QUERY = 5;
     private static final int PREVIOUS_QUERY_ID = 6;
 
-//    // Content types
-//    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/listings";
-//    public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/listing";
+    // Content types
+    private static final String LISTINGS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/listings";
+    private static final String LISTINGS_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/listing";
+    private static final String SEARCH_LISTINGS_CONTENT_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/searchListings";
+    private static final String SEARCH_LISTINGS_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/searchListing";
+    private static final String PREVIOUS_QUERY_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/previousQueries";
+    private static final String PREVIOUS_QUERY_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/previousQuery";
 
-    // Projection map
-    private static HashMap<String, String> projectionMap; // TODO: why???!!!!
+    // TODO: use projection map?
 
     // Maps content URI to integer values
     private static final UriMatcher uriMatcher;
@@ -77,13 +78,9 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Log.d("DATABASE", "MAKING THE TABLEZ!!!");
-        yellowDatabaseHelper = new YellowDatabaseHelper(getContext());
+        YellowDatabaseHelper yellowDatabaseHelper = new YellowDatabaseHelper(getContext());
         yellowDatabase = yellowDatabaseHelper.getWritableDatabase();
-        if (yellowDatabase == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return yellowDatabase != null;
     }
 
     @Override
@@ -91,17 +88,17 @@ public class YellowContentProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         switch (uriType) {
             case LISTINGS:
-                return ""; //TODO
+                return LISTINGS_CONTENT_TYPE;
             case LISTINGS_ID:
-                return ""; //TODO
+                return LISTINGS_CONTENT_ITEM_TYPE;
             case SEARCH_LISTINGS:
-                return ""; //TODO
+                return SEARCH_LISTINGS_CONTENT_TYPE;
             case SEARCH_LISTINGS_ID:
-                return ""; //TODO
+                return SEARCH_LISTINGS_CONTENT_ITEM_TYPE;
             case PREVIOUS_QUERY:
-                return ""; //TODO
+                return PREVIOUS_QUERY_TYPE;
             case PREVIOUS_QUERY_ID:
-                return ""; //TODO !vogella
+                return PREVIOUS_QUERY_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -109,7 +106,6 @@ public class YellowContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        // Using SQLiteQueryBuilder instead of query() method
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         checkColumns(projection);
 
@@ -117,29 +113,23 @@ public class YellowContentProvider extends ContentProvider {
         switch (uriType) {
             case LISTINGS:
                 queryBuilder.setTables(LISTINGS_TABLE);
-                queryBuilder.setProjectionMap(projectionMap);
                 break;
             case LISTINGS_ID:
                 queryBuilder.setTables(LISTINGS_TABLE);
-                // adding the ID to the original query
                 queryBuilder.appendWhere(ListingsTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             case SEARCH_LISTINGS:
                 queryBuilder.setTables(SEARCH_TABLE);
-                queryBuilder.setProjectionMap(projectionMap);
                 break;
             case SEARCH_LISTINGS_ID:
                 queryBuilder.setTables(SEARCH_TABLE);
-                // adding the ID to the original query
                 queryBuilder.appendWhere(SearchTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             case PREVIOUS_QUERY:
                 queryBuilder.setTables(PREVIOUS_QUERY_TABLE);
-                queryBuilder.setProjectionMap(projectionMap);
                 break;
             case PREVIOUS_QUERY_ID:
                 queryBuilder.setTables(PREVIOUS_QUERY_TABLE);
-                // adding the ID to the original query
                 queryBuilder.appendWhere(PreviousQueryTable.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             default:
@@ -153,7 +143,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = uriMatcher.match(uri);
-        long id = 0;
+        long id;
 
         switch (uriType) {
             case LISTINGS:
@@ -185,7 +175,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        int rowsDeleted = 0;
+        int rowsDeleted;
         String id;
 
         switch (uriType) {
@@ -232,7 +222,7 @@ public class YellowContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = uriMatcher.match(uri);
-        int rowsUpdated = 0;
+        int rowsUpdated;
         String id;
 
         switch (uriType) {
@@ -302,7 +292,6 @@ public class YellowContentProvider extends ContentProvider {
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
             HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
-            // check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) {
                 throw new IllegalArgumentException("Unknown columns in projection!");
             }

@@ -17,24 +17,20 @@ import com.tddrampup.databases.SearchTableHelper;
 import roboguice.fragment.RoboFragment;
 
 /**
- * Created by WX009-PC on 2/21/14.
+ * Created by: WX009-PC
+ * on: 2/21/14.
  */
 public class DetailFragment extends RoboFragment {
 
-    private String mListingId;
+    private final String mListingId;
     private TextView nameTextView;
     private TextView locationTextView;
     private TextView websiteTextView;
-    private boolean mIsSearchQuery;
+    private final boolean mIsSearchQuery;
 
     public DetailFragment(String listingId, boolean isSearchQuery) {
         mListingId = listingId;
         mIsSearchQuery = isSearchQuery;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -47,7 +43,7 @@ public class DetailFragment extends RoboFragment {
         return rootView;
     }
 
-    public void populateTextViews() {
+    private void populateTextViews() {
         Cursor cursor;
         int nameIdIndex;
         int streetIdIndex;

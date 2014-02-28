@@ -27,7 +27,7 @@ public class RobolectricTestRunnerWithInjection extends RobolectricTestRunner {
         return TestLifeCycleWithInjection.class;
     }
 
-    public static class TestLifeCycleWithInjection extends DefaultTestLifecycle {
+    private static class TestLifeCycleWithInjection extends DefaultTestLifecycle {
 
         @Override
         public void beforeTest(Method method) {

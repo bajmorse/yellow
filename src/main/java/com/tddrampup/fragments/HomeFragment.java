@@ -20,11 +20,6 @@ public class HomeFragment extends RoboFragment {
     public onItemClickedListener mListener;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.home_fragment, container, false);
 

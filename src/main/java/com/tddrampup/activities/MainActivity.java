@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.inject.Inject;
 import com.tddrampup.R;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
@@ -23,7 +22,6 @@ import com.tddrampup.fragments.ListFragment;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
-import com.tddrampup.singletons.ListingsInterface;
 
 import java.util.List;
 
@@ -33,9 +31,6 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
 
     private VolleyServiceLayer volleyServiceLayer;
     private ProgressDialog mProgressDialog;
-
-    @Inject
-    ListingsInterface mListings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

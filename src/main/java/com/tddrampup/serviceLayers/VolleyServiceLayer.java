@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.tddrampup.fragments.ListFragment;
 import com.tddrampup.models.Listing;
 import com.tddrampup.models.YellowResponse;
 
@@ -19,7 +20,7 @@ import org.json.JSONObject;
  * Created by WX009-PC on 2/20/14.
  */
 public class VolleyServiceLayer {
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
     public VolleyServiceLayerCallback volleyServiceLayerCallback;
 
     public VolleyServiceLayer(Context context){
@@ -44,7 +45,7 @@ public class VolleyServiceLayer {
     }
 
     public void GetListing(String id, final Boolean isSearchQuery) {
-        String url ="http://api.sandbox.yellowapi.com/GetBusinessDetails/?listingId="+ id +"&bus-name=Yellow-Pages-Group&city=Toronto&prov=Ontario&fmt=JSON&lang=en&UID=fgdfg&apikey=4nd67ycv3yeqtg97dku7m845";
+        String url ="http://api.sandbox.yellowapi.com/GetBusinessDetails/?listingId="+ id +"&bus-name=Yellow-Pages-Group&city=Toronto&prov=Ontario&fmt=JSON&lang=en&UID=fgdfg&apikey=" + ListFragment.API_KEY;
         JsonObjectRequest jr = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

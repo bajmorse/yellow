@@ -27,7 +27,8 @@ import roboguice.activity.RoboFragmentActivity;
 import roboguice.fragment.RoboFragment;
 
 /**
- * Created by WX009-PC on 2/19/14.
+ * Created by: WX009-PC
+ * on: 2/19/14.
  */
 public class GoogleMapFragment extends RoboFragment {
 
@@ -44,14 +45,8 @@ public class GoogleMapFragment extends RoboFragment {
     public GoogleMapFragment() {}
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.google_map_fragment, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.google_map_fragment, container, false);
     }
 
     @Override
@@ -92,7 +87,7 @@ public class GoogleMapFragment extends RoboFragment {
             getFragmentManager().beginTransaction().remove(fragment).commit();
     }
 
-    public void addMarkers() {
+    private void addMarkers() {
         addListingsMarkers();
         addSearchMarkers();
     }

@@ -51,7 +51,7 @@ public class SearchTableHelper {
         }
     }
 
-    private static void addListing(Listing listing, Context context) {
+    private static void addListing(Listing listing, Context context) { // TODO: do with SQL?
         ContentValues values = new ContentValues();
         String id = listing.getId();
         if (id != null) {
