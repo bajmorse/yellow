@@ -11,6 +11,8 @@ import com.tddrampup.R;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.ListingsTableHelper;
+import com.tddrampup.databases.SearchTable;
+import com.tddrampup.databases.SearchTableHelper;
 
 import roboguice.fragment.RoboFragment;
 
@@ -23,9 +25,11 @@ public class DetailFragment extends RoboFragment {
     private TextView nameTextView;
     private TextView locationTextView;
     private TextView websiteTextView;
+    private boolean mIsSearchQuery;
 
-    public DetailFragment(String listingId) {
+    public DetailFragment(String listingId, boolean isSearchQuery) {
         mListingId = listingId;
+        mIsSearchQuery = isSearchQuery;
     }
 
     @Override
@@ -44,11 +48,24 @@ public class DetailFragment extends RoboFragment {
     }
 
     public void populateTextViews() {
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableDetailProjection, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
-        int nameIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
-        int streetIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_STREET);
-        int cityIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_CITY);
-        int websiteIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+        Cursor cursor;
+        int nameIdIndex;
+        int streetIdIndex;
+        int cityIdIndex;
+        int websiteIdIndex;
+        if (mIsSearchQuery) {
+            cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, SearchTableHelper.searchTableDetailProjection, SearchTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
+            nameIdIndex = cursor.getColumnIndex(SearchTable.COLUMN_NAME);
+            streetIdIndex = cursor.getColumnIndex(SearchTable.COLUMN_STREET);
+            cityIdIndex = cursor.getColumnIndex(SearchTable.COLUMN_CITY);
+            websiteIdIndex = cursor.getColumnIndex(SearchTable.COLUMN_MERCHANT_URL);
+        } else {
+            cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableDetailProjection, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
+            nameIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
+            streetIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_STREET);
+            cityIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_CITY);
+            websiteIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+        }
         cursor.moveToFirst();
         String name = cursor.getString(nameIdIndex);
         String street = cursor.getString(streetIdIndex);

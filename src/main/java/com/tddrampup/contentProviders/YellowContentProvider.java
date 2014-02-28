@@ -37,8 +37,8 @@ public class YellowContentProvider extends ContentProvider {
 
     // Content provider fields
     private static final String AUTHORITY = "com.tddrampup.contentProviders";
-    private static final String LISTINGS_PATH = "listings";
-    private static final String SEARCH_PATH = "listings";
+    private static final String LISTINGS_PATH = "defaultListings";
+    private static final String SEARCH_PATH = "searchListings";
     private static final String QUERY_PATH = "previousQuery";
 
     // URIs

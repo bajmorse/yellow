@@ -16,6 +16,32 @@ import java.util.List;
  */
 public class SearchTableHelper {
 
+    public static final String[] searchTableAdapterProjection = {
+            SearchTable.COLUMN_ID,
+            SearchTable.COLUMN_NAME,
+            SearchTable.COLUMN_STREET,
+            SearchTable.COLUMN_CITY
+    };
+
+    public static final String[] searchTableMapProjection = {
+            SearchTable.COLUMN_NAME,
+            SearchTable.COLUMN_LATITUDE,
+            SearchTable.COLUMN_LONGITUDE
+    };
+
+    public static final String[] searchTableItemClickProjection = {
+            SearchTable.COLUMN_LISTING_ID,
+            SearchTable.COLUMN_MERCHANT_URL,
+            SearchTable.COLUMN_LONGITUDE
+    };
+
+    public static final String[] searchTableDetailProjection = {
+            SearchTable.COLUMN_NAME,
+            SearchTable.COLUMN_STREET,
+            SearchTable.COLUMN_CITY,
+            SearchTable.COLUMN_MERCHANT_URL,
+    };
+
     public static void addListings(List<Listing> listings, Context context) {
         Uri uri = YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS;
         context.getContentResolver().delete(uri, null, null);

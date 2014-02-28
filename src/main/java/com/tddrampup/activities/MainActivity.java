@@ -14,6 +14,8 @@ import com.tddrampup.R;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.ListingsTableHelper;
+import com.tddrampup.databases.SearchTable;
+import com.tddrampup.databases.SearchTableHelper;
 import com.tddrampup.fragments.DetailFragment;
 import com.tddrampup.fragments.GoogleMapFragment;
 import com.tddrampup.fragments.HomeFragment;
@@ -88,10 +90,20 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
     }
 
     @Override
-    public void onListViewItemClicked(int position) {
-        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableItemClickProjection, null, null, null);
-        int listingIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LISTING_ID);
-        int websiteUrlIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+    public void onListViewItemClicked(int position, boolean isSearchQuery) {
+        Cursor cursor;
+        int listingIdIndex;
+        int websiteUrlIndex;
+
+        if (isSearchQuery) {
+            cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, SearchTableHelper.searchTableItemClickProjection, null, null, null);
+            listingIdIndex = cursor.getColumnIndex(SearchTable.COLUMN_LISTING_ID);
+            websiteUrlIndex = cursor.getColumnIndex(SearchTable.COLUMN_MERCHANT_URL);
+        } else {
+            cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableItemClickProjection, null, null, null);
+            listingIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LISTING_ID);
+            websiteUrlIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
+        }
         cursor.moveToPosition(position);
         String listingId = cursor.getString(listingIdIndex);
         String websiteUrl = cursor.getString(websiteUrlIndex);
@@ -100,9 +112,9 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
         if (websiteUrl.isEmpty()) {
             showLoading();
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
-            volleyServiceLayer.GetListing(listingId);
+            volleyServiceLayer.GetListing(listingId, isSearchQuery);
         } else {
-            launchDetailFragment(listingId);
+            launchDetailFragment(listingId, isSearchQuery);
         }
     }
 
@@ -112,16 +124,20 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
         }
 
         @Override
-        public void itemCallbackCall(Listing listing) {
+        public void itemCallbackCall(Listing listing, Boolean isSearchQuery) {
             hideLoading();
             String listingId = listing.getId();
-            ListingsTableHelper.updateListing(listing, getApplicationContext());
-            launchDetailFragment(listingId);
+            if (isSearchQuery) {
+                SearchTableHelper.updateListing(listing, getApplicationContext());
+            } else {
+                ListingsTableHelper.updateListing(listing, getApplicationContext());
+            }
+            launchDetailFragment(listingId, isSearchQuery);
         }
     }
 
-    private void launchDetailFragment(String listingId) {
-        DetailFragment detailFragment = new DetailFragment(listingId);
+    private void launchDetailFragment(String listingId, Boolean isSearchQuery) {
+        DetailFragment detailFragment = new DetailFragment(listingId, isSearchQuery);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_activity, detailFragment, "MY_DETAIL_FRAGMENT");
         transaction.addToBackStack(null);

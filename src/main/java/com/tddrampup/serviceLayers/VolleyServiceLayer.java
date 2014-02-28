@@ -43,14 +43,14 @@ public class VolleyServiceLayer {
         mRequestQueue.add(jr);
     }
 
-    public void GetListing(String id) {
+    public void GetListing(String id, final Boolean isSearchQuery) {
         String url ="http://api.sandbox.yellowapi.com/GetBusinessDetails/?listingId="+ id +"&bus-name=Yellow-Pages-Group&city=Toronto&prov=Ontario&fmt=JSON&lang=en&UID=fgdfg&apikey=4nd67ycv3yeqtg97dku7m845";
         JsonObjectRequest jr = new JsonObjectRequest(Request.Method.GET,url,null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Gson gson = new Gson();
                 Listing listing = gson.fromJson(response.toString(), Listing.class);
-                volleyServiceLayerCallback.itemCallbackCall(listing);
+                volleyServiceLayerCallback.itemCallbackCall(listing, isSearchQuery);
             }
         },new Response.ErrorListener() {
             @Override

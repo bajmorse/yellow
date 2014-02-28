@@ -8,5 +8,5 @@ import java.util.List;
  */
 public interface VolleyServiceLayerCallback {
     void listCallbackCall(List<Listing> listings);
-    void itemCallbackCall(Listing listing);
+    void itemCallbackCall(Listing listing, Boolean isSearchQuery);
 }

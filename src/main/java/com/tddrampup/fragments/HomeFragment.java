@@ -52,20 +52,14 @@ public class HomeFragment extends RoboFragment {
         searchButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                what.setText("Restaurants");
-                where.setText("Toronto");
+                what.setText("Sushi");
+                where.setText("Halifax");
                 return false;
             }
         });
 
         return rootView;
     }
-
-    public interface onItemClickedListener {
-        public void onListButtonClicked();
-        public void onMapButtonClicked();
-        public void onSearchButtonClicked();
-     }
 
     @Override
     public void onAttach(Activity activity) {
@@ -79,5 +73,11 @@ public class HomeFragment extends RoboFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public interface onItemClickedListener {
+        public void onListButtonClicked();
+        public void onMapButtonClicked();
+        public void onSearchButtonClicked();
     }
 }

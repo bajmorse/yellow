@@ -17,6 +17,8 @@ import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
 import com.tddrampup.databases.ListingsTableHelper;
 import com.tddrampup.databases.PreviousQueryTableHelper;
+import com.tddrampup.databases.SearchTable;
+import com.tddrampup.databases.SearchTableHelper;
 import com.tddrampup.models.Listing;
 import com.tddrampup.serviceLayers.VolleyServiceLayer;
 import com.tddrampup.serviceLayers.VolleyServiceLayerCallback;
@@ -32,6 +34,7 @@ import roboguice.fragment.RoboFragment;
 public class ListFragment extends RoboFragment {
 
     private static final String API_KEY = "4nd67ycv3yeqtg97dku7m845";
+    private static final String MAX_LISTINGS = "40";
     private static final String DEFAULT_WHAT = "Restaurants";
     private static final String DEFAULT_WHERE = "Toronto";
 
@@ -40,7 +43,8 @@ public class ListFragment extends RoboFragment {
     private VolleyServiceLayer volleyServiceLayer;
     private ProgressDialog mProgressDialog;
     private String mUrl;
-    private boolean allowNetworkCall;
+    private boolean mAllowNetworkCall;
+    private boolean mIsSearchQuery;
 
     public String mWhat;
     public String mWhere;
@@ -54,17 +58,19 @@ public class ListFragment extends RoboFragment {
     public ListFragment() {
         mWhat = DEFAULT_WHAT;
         mWhere = DEFAULT_WHERE;
+        mIsSearchQuery = false;
     }
 
     public ListFragment(final String what, final String where) {
         mWhat = what;
         mWhere = where;
+        mIsSearchQuery = true;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=" + mWhat + "&where=" + mWhere + "&pgLen=40&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=" + API_KEY;
+        mUrl = "http://api.sandbox.yellowapi.com/FindBusiness/?what=" + mWhat + "&where=" + mWhere + "&pgLen=" + MAX_LISTINGS + "&pg=1&dist=1&fmt=JSON&lang=en&UID=jkhlh&apikey=" + API_KEY;
     }
 
     @Override
@@ -78,19 +84,28 @@ public class ListFragment extends RoboFragment {
         mListView.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mListener.onListViewItemClicked(position);
+                mListener.onListViewItemClicked(position, mIsSearchQuery);
             }
         });
 
-        List<String> previousQuery = PreviousQueryTableHelper.getQuery(getActivity());
-        if (mWhat.equals(previousQuery.get(0)) && mWhere.equals(previousQuery.get(1))) {
-            allowNetworkCall = false;
+        if (mIsSearchQuery) {
+            List<String> previousQuery = PreviousQueryTableHelper.getQuery(getActivity());
+            if (mWhat.equals(previousQuery.get(0)) && mWhere.equals(previousQuery.get(1))) {
+                mAllowNetworkCall = false;
+            } else {
+                mAllowNetworkCall = true;
+                PreviousQueryTableHelper.setQuery(getActivity(), mWhat, mWhere);
+            }
         } else {
-            allowNetworkCall = true;
-            PreviousQueryTableHelper.setQuery(getActivity(), mWhat, mWhere);
+            Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                mAllowNetworkCall = false;
+            } else {
+                mAllowNetworkCall = true;
+            }
         }
 
-        if (allowNetworkCall) {
+        if (mAllowNetworkCall) {
             showLoading();
             volleyServiceLayer = new VolleyServiceLayer(rootView.getContext());
             volleyServiceLayer.volleyServiceLayerCallback = new Callback();
@@ -104,21 +119,42 @@ public class ListFragment extends RoboFragment {
     }
 
     public interface onListViewItemClickedListener {
-        public void onListViewItemClicked(int position);
+        public void onListViewItemClicked(int position, boolean isSearchQuery);
     }
 
-    private void showLoading() {
-        mProgressDialog.setTitle("Loading:");
-        mProgressDialog.setMessage("Fetching listings...");
-        mProgressDialog.show();
+    class Callback implements VolleyServiceLayerCallback {
+        public void listCallbackCall(List<Listing> listings) {
+            hideLoading();
+            if (mIsSearchQuery) {
+                SearchTableHelper.addListings(listings, getActivity());
+            } else {
+                ListingsTableHelper.addListings(listings, getActivity());
+            }
+            setupAdapter();
+        }
+
+        @Override
+        public void itemCallbackCall(Listing listing, Boolean isSearchQuery) {
+            // do nothing
+        }
     }
 
-    private void hideLoading() {
-        mProgressDialog.dismiss();
-    }
-
-    public boolean isProgressDialogShowing() {
-        return mProgressDialog.isShowing();
+    private void setupAdapter(){
+        final int views[] = { R.id.listing_title, R.id.listing_address, R.id.listing_city };
+        final Cursor cursor;
+        String[] fields;
+        if (mIsSearchQuery) {
+            String[] tempFields = { SearchTable.COLUMN_NAME, SearchTable.COLUMN_STREET, SearchTable.COLUMN_CITY };
+            fields = tempFields;
+            cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_SEARCH_LISTINGS, SearchTableHelper.searchTableAdapterProjection, null, null, null);
+        } else {
+            String[] tempFields = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
+            fields = tempFields;
+            cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableAdapterProjection, null, null, null);
+        }
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);
+        mListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -135,42 +171,17 @@ public class ListFragment extends RoboFragment {
         mListener = null;
     }
 
-    class Callback implements VolleyServiceLayerCallback {
-        public void listCallbackCall(List<Listing> listings) {
-            hideLoading();
-            ListingsTableHelper.addListings(listings, getActivity());
-            setupAdapter();
-        }
-
-        @Override
-        public void itemCallbackCall(Listing listing) {
-            // do nothing
-        }
+    private void showLoading() {
+        mProgressDialog.setTitle("Loading:");
+        mProgressDialog.setMessage("Fetching listings...");
+        mProgressDialog.show();
     }
 
-    private void setupAdapter(){
-        final String fields[] = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
-        final int views[] = { R.id.listing_title, R.id.listing_address, R.id.listing_city };
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableAdapterProjection, null, null, null);
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);
-        mListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+    private void hideLoading() {
+        mProgressDialog.dismiss();
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        String[] projection = {ListingsTable.COLUMN_ID, ListingsTable.COLUMN_NAME };
-//        CursorLoader cursorLoader = new CursorLoader(getActivity(), YellowContentProvider.CONTENT_URI_LISTINGS, projection, null, null, null);
-//        return cursorLoader;
-//    }
-
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        mCursorAdapter.swapCursor(data);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> loader) {
-//        mCursorAdapter.swapCursor(null);
-//    }
+    public boolean isProgressDialogShowing() {
+        return mProgressDialog.isShowing();
+    }
 }
