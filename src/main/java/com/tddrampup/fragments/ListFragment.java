@@ -151,7 +151,7 @@ public class ListFragment extends RoboFragment {
     private void setupAdapter(){
         final String fields[] = { ListingsTable.COLUMN_NAME, ListingsTable.COLUMN_STREET, ListingsTable.COLUMN_CITY };
         final int views[] = { R.id.listing_title, R.id.listing_address, R.id.listing_city };
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableAdapterProjection, null, null, null);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.row_listview, cursor, fields, views, 0);
         mListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

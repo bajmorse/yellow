@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tddrampup.R;
 import com.tddrampup.contentProviders.YellowContentProvider;
 import com.tddrampup.databases.ListingsTable;
+import com.tddrampup.databases.ListingsTableHelper;
 
 import roboguice.fragment.RoboFragment;
 
@@ -34,7 +35,6 @@ public class DetailFragment extends RoboFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.detail_fragment, container, false);
         nameTextView = (TextView) rootView.findViewById(R.id.name_detail_fragment);
         locationTextView = (TextView) rootView.findViewById(R.id.location_detail_fragment);
@@ -44,7 +44,7 @@ public class DetailFragment extends RoboFragment {
     }
 
     public void populateTextViews() {
-        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
+        Cursor cursor = getActivity().getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableDetailProjection, ListingsTable.COLUMN_LISTING_ID + "=" + mListingId, null, null);
         int nameIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_NAME);
         int streetIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_STREET);
         int cityIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_CITY);

@@ -89,7 +89,7 @@ public class MainActivity extends RoboFragmentActivity implements HomeFragment.o
 
     @Override
     public void onListViewItemClicked(int position) {
-        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, null, null, null, null);
+        Cursor cursor = getContentResolver().query(YellowContentProvider.CONTENT_URI_LISTINGS, ListingsTableHelper.listingsTableItemClickProjection, null, null, null);
         int listingIdIndex = cursor.getColumnIndex(ListingsTable.COLUMN_LISTING_ID);
         int websiteUrlIndex = cursor.getColumnIndex(ListingsTable.COLUMN_MERCHANT_URL);
         cursor.moveToPosition(position);

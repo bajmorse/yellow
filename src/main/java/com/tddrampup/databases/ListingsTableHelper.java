@@ -16,6 +16,32 @@ import java.util.List;
  */
 public class ListingsTableHelper {
 
+    public static final String[] listingsTableAdapterProjection = {
+        ListingsTable.COLUMN_ID,
+        ListingsTable.COLUMN_NAME,
+        ListingsTable.COLUMN_STREET,
+        ListingsTable.COLUMN_CITY
+    };
+
+    public static final String[] listingsTableMapProjection = {
+        ListingsTable.COLUMN_NAME,
+        ListingsTable.COLUMN_LATITUDE,
+        ListingsTable.COLUMN_LONGITUDE
+    };
+
+    public static final String[] listingsTableItemClickProjection = {
+            ListingsTable.COLUMN_LISTING_ID,
+            ListingsTable.COLUMN_MERCHANT_URL,
+            ListingsTable.COLUMN_LONGITUDE
+    };
+
+    public static final String[] listingsTableDetailProjection = {
+            ListingsTable.COLUMN_NAME,
+            ListingsTable.COLUMN_STREET,
+            ListingsTable.COLUMN_CITY,
+            ListingsTable.COLUMN_MERCHANT_URL,
+    };
+
     public static void addListings(List<Listing> listings, Context context) {
         Uri uri = YellowContentProvider.CONTENT_URI_LISTINGS;
         context.getContentResolver().delete(uri, null, null);
